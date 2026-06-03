@@ -8,6 +8,7 @@ description: >
   and evals built from your production data.
 
 api_base: https://api.dev.mdl.bayis.co.uk
+waitlist_api_base: https://api.dev.clientlog.bayis.co.uk/v1
 
 plugins:
   - jekyll-sitemap

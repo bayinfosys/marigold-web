@@ -38,7 +38,7 @@ function submitWaitlist(source) {
   var email = document.getElementById('wl-' + source).value;
   var note  = document.getElementById('wl-note-' + source);
   if (!email || email.indexOf('@') < 0) return;
-  fetch('{{ site.api_base }}/users/waitlist', {
+  fetch('{{ site.waitlist_api_base }}/users/waitlist', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: email, source: source })
