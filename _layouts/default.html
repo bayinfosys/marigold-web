@@ -48,5 +48,13 @@ function submitWaitlist(source) {
 }
 </script>
 
+<script src="https://www.dev.clientlog.bayis.co.uk/clientlog.js"></script>
+<script>
+  const logger = clientlog.createLogger({
+    endpoint: "https://api.dev.clientlog.bayis.co.uk/v1/event",
+    project: "marigold/home"
+  });
+</script>
+
 </body>
 </html>
