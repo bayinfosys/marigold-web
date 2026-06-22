@@ -7,7 +7,7 @@ author: Marigold
 category: Engineering
 reading_time: 7
 canonical: "https://marigold.run/blog/format-vs-task/"
-title: "Impact of Serialisation Format on LLM Task Performance."
+og_title: "Impact of Serialisation Format on LLM Task Performance."
 og_description: "A benchmark across four small models found the format effect everyone talks about mostly wasn't there. The task was the variable that mattered."
 schema: |
   <script type="application/ld+json">
