@@ -1,13 +1,13 @@
 ---
 layout: post
-title: "Format Doesn't Matter. The Task Does."
+title: "Impact of Serialisation Format on LLM Task Performance."
 description: "A benchmark across four small models found the format effect everyone talks about mostly wasn't there. The task was the variable that mattered, and it broke in the same way for every model we tried."
 date: 2026-06-22
 author: Marigold
 category: Engineering
 reading_time: 7
 canonical: "https://marigold.run/blog/format-vs-task/"
-og_title: "Format Doesn't Matter. The Task Does."
+title: "Impact of Serialisation Format on LLM Task Performance."
 og_description: "A benchmark across four small models found the format effect everyone talks about mostly wasn't there. The task was the variable that mattered."
 schema: |
   <script type="application/ld+json">
