@@ -15,7 +15,8 @@ layout: default
   max-width: 72ch;
 }
 
-.post-title {
+.post-title,
+.post-body > h1:first-child {
   font-size: clamp(1.75rem, 3.5vw, 2.6rem);
   line-height: 1.2;
   font-family: 'Knewave', 'Trebuchet MS', sans-serif;
@@ -31,13 +32,14 @@ layout: default
   margin-bottom: 1.25rem;
 }
 
-.post-lede {
+.post-lede,
+.post-body > h1:first-child + p {
   font-size: 1.15rem;
   color: var(--ink);
   line-height: 1.7;
   max-width: 64ch;
   font-family: 'Junction', 'Trebuchet MS', 'Gill Sans', sans-serif;
-  margin: 0;
+  margin: 0 0 1.25rem;
 }
 
 .post-body {
@@ -209,7 +211,6 @@ layout: default
     <header class="post-header">
       <div class="wrap">
         {% if page.category %}<p class="hero-eyebrow">{{ page.category }}</p>{% endif %}
-        <h1 class="post-title" itemprop="headline">{{ page.title }}</h1>
         <p class="post-meta">
           <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
             {{ page.date | date: "%-d %B %Y" }}
@@ -217,9 +218,6 @@ layout: default
           {% if page.author %}&nbsp;&mdash;&nbsp;<span itemprop="author">{{ page.author }}</span>{% endif %}
           {% if page.reading_time %}&nbsp;&mdash;&nbsp;{{ page.reading_time }} min read{% endif %}
         </p>
-        {% if page.description %}
-        <p class="post-lede" itemprop="description">{{ page.description }}</p>
-        {% endif %}
       </div>
     </header>
 
