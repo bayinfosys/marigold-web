@@ -6,7 +6,7 @@ date: 2026-06-22
 author: Marigold
 category: Engineering
 reading_time: 6
-canonical: "https://marigold.run/blog/cheap-gpu-serving/"
+canonical: "https://marigold.run/blog/llm-providers/"
 og_title: "Local LLM Serving on a £170 GPU: vLLM, Ollama, and Marigold Compared"
 og_description: "Three serving stacks, one model, one cheap GPU. A 14.7x speedup, and a VRAM problem most benchmarks don't mention."
 schema: |
