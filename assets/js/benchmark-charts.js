@@ -9,6 +9,12 @@
  * Config block format: array of panel specs.
  * Each spec may have:
  *   data         {string}  -- id of application/json block containing the data array
+ *   data_url     {string}  -- alternative to `data`: a URL to fetch the data array
+ *                              from instead of reading it inline. Use this for large
+ *                              per-request datasets where inlining would bloat the
+ *                              page; keep `data` for anything small enough to matter
+ *                              for crawlability (summaries, tables). Exactly one of
+ *                              `data` / `data_url` must be set.
  *   table        {string}  -- id of <table> element to populate (optional)
  *   canvas       {string}  -- id of <canvas> element to render chart into (optional)
  *   columns      {array}   -- column definitions for the table (required if table set)
@@ -21,11 +27,12 @@
  *   label            {string}  -- header text
  *   format           {string}  -- "number" applies toLocaleString()
  *   suffix           {string}  -- appended to value e.g. "B"
+ *   prefix           {string}  -- prepended to value e.g. "£"
  *   family_dot       {bool}    -- prepend a coloured dot using d.family
  *   variance_marker  {bool}    -- append " *" if d.variance is truthy
  *
  * Chart configuration:
- *   type        {string}  -- "scatter" | "bar" | "hbar"
+ *   type        {string}  -- "scatter" | "bar" | "hbar" | "segmented_line"
  *
  *   scatter:
  *     x, y         {string}  -- data keys for axes
@@ -44,6 +51,30 @@
  *     value_key    {string}  -- data key for bar values
  *     colour       {string}  -- hex colour for bars
  *     x_label, y_label, unit
+ *
+ *   segmented_line:
+ *     Renders one line per contiguous run of a key in the data array (e.g.
+ *     one line per model, in the order requests were made), with a coloured
+ *     background band marking each run's extent on the x axis. Designed for
+ *     "value over request index, grouped by which model produced it" --
+ *     the shape every per-request benchmark telemetry chart takes.
+ *
+ *     segment_by   {string}  -- data key that defines a segment (e.g. "model").
+ *                               A new segment starts wherever this value changes
+ *                               from the previous row.
+ *     y            {string}  -- data key for the y value
+ *     y_scale      {number}  -- optional multiplier applied to y (e.g. 1e-9 to
+ *                               convert bytes to GB). Default 1 (no change).
+ *     y_label      {string}  -- y axis label
+ *     legend_group {string}  -- id grouping this chart with others that should
+ *                               share one legend and one set of toggles. All
+ *                               specs sharing a legend_group must use the same
+ *                               underlying data (same `data` or `data_url`) so
+ *                               segments line up across charts. The legend
+ *                               renders into the element named by `legend` on
+ *                               whichever spec in the group runs first.
+ *     legend       {string}  -- id of element to render the toggle legend into.
+ *                               Only needs setting on one spec per legend_group.
  */
 
 (function () {
@@ -68,6 +99,25 @@
     deepseek: 'DeepSeek',
     other:    'Other'
   };
+
+  // Palette for segmented_line charts. Unlike FAMILY_COLOURS (a handful of
+  // known model families), a segmented chart can have any number of
+  // arbitrary segment values, so colour is assigned deterministically by
+  // hashing the segment label rather than from a fixed lookup table -- any
+  // new model name gets a colour automatically, with no list to maintain.
+  var SEGMENT_PALETTE = [
+    '#378ADD', '#1D9E75', '#E0A82E', '#7F77DD', '#E0556B',
+    '#3FA7A0', '#C9692B', '#8A6FD1', '#2E9E5B', '#D14C8D',
+    '#5B8FD9', '#B8923A', '#4FA3C4', '#9A5FB0'
+  ];
+
+  function colourForSegment(label) {
+    var h = 0;
+    for (var i = 0; i < label.length; i++) {
+      h = (h * 31 + label.charCodeAt(i)) >>> 0;
+    }
+    return SEGMENT_PALETTE[h % SEGMENT_PALETTE.length];
+  }
 
   // ---------------------------------------------------------------------------
   // Theme
@@ -101,9 +151,10 @@
 
   function formatCell(value, col) {
     if (value == null) return '';
-    if (col.format === 'number') return Number(value).toLocaleString();
-    if (col.suffix) return value + col.suffix;
-    return String(value);
+    var out = value;
+    if (col.format === 'number') out = Number(value).toLocaleString();
+    out = (col.prefix || '') + out + (col.suffix || '');
+    return out;
   }
 
   function baseTooltip() {
@@ -217,46 +268,47 @@
   // Scatter chart
   // ---------------------------------------------------------------------------
 
-function buildScatterChart(canvas, data, cfg) {
-  var labelKey = cfg.label || 'model';
+  function buildScatterChart(canvas, data, cfg) {
+    var labelKey = cfg.label || 'model';
 
-  return new Chart(canvas, {
-    type: 'scatter',
-    data: {
-      datasets: [{
-        data: data.map(function(d) {
-          var pt = { x: d[cfg.x], y: d[cfg.y] };
-          pt[labelKey] = d[labelKey];
-          return pt;
-        }),
-        backgroundColor: cfg.colour || '#378ADD',
-        pointRadius: 5,
-        pointHoverRadius: 7
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: Object.assign(baseTooltip(), {
-          callbacks: {
-            label: function(ctx) {
-              var d = ctx.raw;
-              return ' ' + (d[labelKey] || '') +
-                ': ' + d.y + (cfg.y_unit ? ' ' + cfg.y_unit : '') +
-                ' @ ' + d.x + (cfg.x_unit || '');
-            }
-          }
-        })
+    return new Chart(canvas, {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          data: data.map(function(d) {
+            var pt = { x: d[cfg.x], y: d[cfg.y] };
+            pt[labelKey] = d[labelKey];
+            return pt;
+          }),
+          backgroundColor: cfg.colour || '#378ADD',
+          pointRadius: 5,
+          pointHoverRadius: 7
+        }]
       },
-      scales: {
-        x: scaleAxis(cfg.x_label, cfg.x_min, cfg.x_max),
-        y: scaleAxis(cfg.y_label, cfg.y_min, cfg.y_max)
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: Object.assign(baseTooltip(), {
+            callbacks: {
+              label: function(ctx) {
+                var d = ctx.raw;
+                return ' ' + (d[labelKey] || '') +
+                  ': ' + d.y + (cfg.y_unit ? ' ' + cfg.y_unit : '') +
+                  ' @ ' + d.x + (cfg.x_unit || '');
+              }
+            }
+          })
+        },
+        scales: {
+          x: scaleAxis(cfg.x_label, cfg.x_min, cfg.x_max),
+          y: scaleAxis(cfg.y_label, cfg.y_min, cfg.y_max)
+        }
       }
-    }
-  });
-}
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // Bar / horizontal bar chart
   // ---------------------------------------------------------------------------
@@ -297,29 +349,166 @@ function buildScatterChart(canvas, data, cfg) {
   }
 
   // ---------------------------------------------------------------------------
+  // Segmented line chart (one line + background band per contiguous run of
+  // segment_by, e.g. one per model across a sequence of per-request rows)
+  // ---------------------------------------------------------------------------
+
+  var segmentBandPlugin = {
+    id: 'segmentBands',
+    beforeDraw: function (chart) {
+      var ctx = chart.ctx, chartArea = chart.chartArea, scales = chart.scales;
+      chart.data.datasets.forEach(function (ds, i) {
+        if (!chart.isDatasetVisible(i)) return;
+        var xStart = scales.x.getPixelForValue(ds._segStart);
+        var xEnd   = scales.x.getPixelForValue(ds._segEnd);
+        ctx.save();
+        ctx.fillStyle = ds.borderColor + '1f';
+        ctx.fillRect(xStart, chartArea.top, xEnd - xStart, chartArea.bottom - chartArea.top);
+        ctx.restore();
+      });
+    }
+  };
+
+  function buildRunSegments(rows, key) {
+    var segs = [];
+    var cur = null;
+    rows.forEach(function (r, i) {
+      if (!cur || cur.value !== r[key]) {
+        if (cur) segs.push(cur);
+        cur = { value: r[key], start: i, end: i };
+      } else {
+        cur.end = i;
+      }
+    });
+    if (cur) segs.push(cur);
+    return segs;
+  }
+
+  // Tracks legend_group -> { charts: [Chart...], segments: [...] } so that
+  // toggling one chip hides/shows the matching dataset across every chart
+  // registered under the same group, even though each chart was built from
+  // a separate spec in chart-config.
+  var legendGroups = {};
+
+  function buildSegmentedLineChart(canvas, data, cfg) {
+    var segments = buildRunSegments(data, cfg.segment_by);
+    var scaleFn = cfg.y_scale ? function (v) { return v * cfg.y_scale; } : function (v) { return v; };
+
+    var datasets = segments.map(function (seg) {
+      var points = [];
+      for (var i = seg.start; i <= seg.end; i++) {
+        points.push({ x: i, y: scaleFn(data[i][cfg.y]) });
+      }
+      var colour = colourForSegment(String(seg.value));
+      return {
+        label: seg.value, data: points, borderColor: colour,
+        backgroundColor: colour, borderWidth: 1.3, pointRadius: 0,
+        tension: 0.1, _segStart: seg.start, _segEnd: seg.end
+      };
+    });
+
+    var chart = new Chart(canvas, {
+      type: 'line',
+      data: { datasets: datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false, parsing: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { type: 'linear', grid: { display: false }, ticks: { display: false } },
+          y: scaleAxis(cfg.y_label, null, null)
+        }
+      },
+      plugins: [segmentBandPlugin]
+    });
+
+    if (cfg.legend_group) {
+      var group = legendGroups[cfg.legend_group];
+      if (!group) {
+        group = legendGroups[cfg.legend_group] = { charts: [], segments: segments };
+        if (cfg.legend) renderSegmentLegend(cfg.legend, segments, group);
+      }
+      group.charts.push(chart);
+    }
+
+    return chart;
+  }
+
+  function renderSegmentLegend(legendId, segments, group) {
+    var el = document.getElementById(legendId);
+    if (!el) { console.warn('benchmark-charts: legend element not found: ' + legendId); return; }
+    segments.forEach(function (seg, i) {
+      var chip = document.createElement('span');
+      chip.className = 'seg-chip';
+      var colour = colourForSegment(String(seg.value));
+      chip.innerHTML = '<span class="dot" style="background:' + colour + ';"></span>' + seg.value;
+      chip.addEventListener('click', function () {
+        var nowHidden = group.charts[0].isDatasetVisible(i);
+        group.charts.forEach(function (c) {
+          c.setDatasetVisibility(i, !nowHidden);
+          c.update();
+        });
+        chip.classList.toggle('off', nowHidden);
+      });
+      el.appendChild(chip);
+    });
+  }
+
+  // ---------------------------------------------------------------------------
   // Entry point
   // ---------------------------------------------------------------------------
+
+  function renderPanel(spec, data) {
+    if (spec.table && spec.columns) {
+      var tableEl = document.getElementById(spec.table);
+      if (tableEl) buildTable(tableEl, data, spec.columns, spec.sort_default, spec.sort_dir);
+    }
+
+    if (spec.canvas && spec.chart) {
+      var canvas = document.getElementById(spec.canvas);
+      if (!canvas) return;
+      var type = spec.chart.type;
+      if      (type === 'scatter')        buildScatterChart(canvas, data, spec.chart);
+      else if (type === 'bar')            buildBarChart(canvas, data, spec.chart, false);
+      else if (type === 'hbar')           buildBarChart(canvas, data, spec.chart, true);
+      else if (type === 'segmented_line') buildSegmentedLineChart(canvas, data, spec.chart);
+      else console.warn('benchmark-charts: unknown chart type: ' + type);
+    }
+  }
+
+  function showFetchError(spec) {
+    [spec.canvas].concat(
+      // segmented_line specs sharing a legend_group may also want the
+      // legend itself cleared on failure, but the canvas message is the
+      // signal that matters most.
+      []
+    ).forEach(function (id) {
+      var canvas = id && document.getElementById(id);
+      if (!canvas) return;
+      var note = document.createElement('p');
+      note.className = 'chart-caption';
+      note.textContent = 'Data failed to load.';
+      canvas.replaceWith(note);
+    });
+  }
 
   function init() {
     var config = readJSON('chart-config');
     if (!config) return;
 
     config.forEach(function (spec) {
-      var data = readJSON(spec.data);
-      if (!data) return;
-
-      if (spec.table && spec.columns) {
-        var tableEl = document.getElementById(spec.table);
-        if (tableEl) buildTable(tableEl, data, spec.columns, spec.sort_default, spec.sort_dir);
-      }
-
-      if (spec.canvas && spec.chart) {
-        var canvas = document.getElementById(spec.canvas);
-        if (!canvas) return;
-        var type = spec.chart.type;
-        if      (type === 'scatter') buildScatterChart(canvas, data, spec.chart);
-        else if (type === 'bar')     buildBarChart(canvas, data, spec.chart, false);
-        else if (type === 'hbar')    buildBarChart(canvas, data, spec.chart, true);
+      if (spec.data_url) {
+        fetch(spec.data_url)
+          .then(function (response) { return response.json(); })
+          .then(function (data) { renderPanel(spec, data); })
+          .catch(function (err) {
+            console.warn('benchmark-charts: fetch failed for ' + spec.data_url, err);
+            showFetchError(spec);
+          });
+      } else if (spec.data) {
+        var data = readJSON(spec.data);
+        if (data) renderPanel(spec, data);
+      } else {
+        console.warn('benchmark-charts: spec has neither data nor data_url', spec);
       }
     });
   }
