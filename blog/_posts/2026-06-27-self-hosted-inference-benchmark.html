@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Self-hosted inference on a single consumer GPU: 14 models on an RTX 3060"
-description: "Per-request latency, power draw, and VRAM telemetry across 14 open-weight instruct models, running locally through Marigold."
+description: "What does self-hosted inference cost in practice? 14 open-weight models, full telemetry, one GPU: 5.6p electricity cost 280k tokens."
 date: 2026-06-27
 author: Marigold
 category: Engineering
@@ -71,7 +71,6 @@ schema: |
       { "key": "infer_seconds_p50", "label": "p50 (s)" },
       { "key": "power_watts_mean", "label": "Power mean (W)" },
       { "key": "vram_gb_mean", "label": "VRAM mean (GB)" },
-      { "key": "gbp_per_mtok", "label": "GBP / 1M tok", "prefix": "£" }
     ],
     "sort_default": "toks_per_sec",
     "sort_dir": "desc"
@@ -128,7 +127,7 @@ schema: |
   <div class="post-stat"><span class="post-stat-value">1,204</span><span class="post-stat-label">Requests</span></div>
   <div class="post-stat"><span class="post-stat-value">86</span><span class="post-stat-label">Requests / model</span></div>
   <div class="post-stat"><span class="post-stat-value">1</span><span class="post-stat-label">GPU</span></div>
-  <div class="post-stat"><span class="post-stat-value">5.6p</span><span class="post-stat-label">Electricity, whole run</span></div>
+  <div class="post-stat"><span class="post-stat-value">5.6p</span><span class="post-stat-label">Electricity</span></div>
 </div>
 
 <h2>Setup</h2>
