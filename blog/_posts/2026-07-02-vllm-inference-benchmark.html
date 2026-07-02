@@ -254,29 +254,33 @@ All three are NF4 4-bit quantised; the VRAM difference between them reflects act
 
 <h2>The same image, four models</h2>
 
-<p>COCO image 8629 is a six-panel grid of pizza photographs.
-It is a useful illustration because it has composite structure that models may or may not recognise, and because the four responses differ in length by a factor of 25 despite the same prompt and the same input.</p>
+<p>COCO image 286458 is a diptych: two photographs of open suitcases placed side by side,
+with a "baggage" watermark at the lower right. All four models received the same prompt
+against the same image and produced outputs ranging from 14 to 182 tokens, all stopping
+within the 256-token cap.</p>
 
-<img class="example-image" src="http://images.cocodataset.org/val2017/000000008629.jpg"
-     alt="COCO val2017 image 8629: a six-panel grid of pizza photographs on white plates"
-     loading="lazy" style="max-width: 600px;">
+<img class="example-image"
+     src="/assets/img/vlm-benchmark/286458.jpg"
+     alt="Two photographs side by side, each showing an open suitcase with travel contents laid out on a tiled floor. A yellow baggage watermark appears at the lower right."
+     loading="lazy"
+     style="max-width: 600px;">
 
 <div class="example-row">
   <div class="example-card">
-    <div class="model-tag">PaliGemma2-3B <span class="tok-count">112 tokens</span></div>
-    <p>A collage of photos showcasing various slices of pizza on white plates. The pizzas vary in toppings, with some featuring cheese, meat, vegetables, and sauce. A fork rests on the plate, while a knife lies partially on the pizza. The crust of the pizza is visible in some photos, while others have a crispy texture. The cheese is melted on the pizza, creating a mouthwatering aroma. The plates are arranged in a grid, with three slices on the top and two slices on the bottom. The overall image showcases a delightful feast for the eyes.</p>
+    <div class="model-tag">PaliGemma2-3B <span class="tok-count">142 tokens</span></div>
+    <p>A silver suitcase lies on the floor, its contents spilling out. The suitcase contains a red bag with items neatly packed inside, including a brown bag with a white tag, a small white bottle, a brown bag on the right with a red zip, and a brown pillow with a leopard print cover. A black backpack sits on the floor next to the suitcase, while a small black bag with a long strap and a brown bag with a white tag are also visible. The floor is made of wood and tiled, and the light shines on the suitcase, reflecting off the shiny tile. The word "baggage" is written in yellow on the photo, and the overall mood is one of organisation and clutter.</p>
   </div>
   <div class="example-card">
-    <div class="model-tag">Idefics2-8B <span class="tok-count">10 tokens</span></div>
-    <p>Six pictures of pizza on plates are shown.</p>
+    <div class="model-tag">Idefics2-8B <span class="tok-count">14 tokens</span></div>
+    <p>An open suitcase with the word baggage next to it.</p>
   </div>
   <div class="example-card">
-    <div class="model-tag">LLaVA-NeXT-7B <span class="tok-count">256 tokens (cap)</span></div>
-    <p>The image is a collage of six photographs featuring slices of pizza. The pizza slices are presented on white plates, and the backgrounds of the photographs are blurred, drawing focus to the pizza. In the top left photo, a slice of pizza is placed on a white plate, with a fork and knife visible in the background. The pizza has a golden-brown crust and is topped with melted cheese and what appears to be tomato sauce. The top right photo shows a close-up of a pizza slice with a thick crust, topped with a generous amount of cheese and what could be herbs or spices. The bottom left photo features a slice of pizza with a thin crust, topped with cheese and what seems to be a meat topping, possibly pepperoni. The bottom middle photo displays a slice of pizza with a thick crust, topped with cheese and a vegetable topping, possibly mushrooms or bell peppers. The bottom right photo shows a slice of pizza with a thin crust, topped with cheese and a meat topping, possibly sausage. The bottom left photo is a close-up of a slice of pizza</p>
+    <div class="model-tag">Qwen2.5-VL-7B <span class="tok-count">162 tokens</span></div>
+    <p>The image shows two photographs side by side, both depicting a suitcase filled with various items. The left photograph shows the suitcase open on a tiled floor, with its contents neatly organised. Inside the suitcase, there are several compartments and bags containing personal items such as toiletries, medications, and other essentials. A small bag is placed on top of the suitcase, possibly for additional storage or as a travel pillow.<br><br>The right photograph provides a closer view of the suitcase's contents, focusing on the items inside. It includes bottles, tubes, and other personal care products, suggesting that the suitcase is being packed for travel. The word "baggage" is written in yellow text at the bottom right corner of the right photograph.</p>
   </div>
   <div class="example-card">
-    <div class="model-tag">Qwen2.5-VL-7B <span class="tok-count">188 tokens</span></div>
-    <p>This image is a collage of six photos, each showcasing different slices of pizza. The pizzas appear to be from the same restaurant or type of establishment, as they share similar toppings and styles. Here's a breakdown of what can be observed in each photo: 1. Top Left: A close-up of a slice with melted cheese and possibly some tomato sauce underneath. 2. Top Right: Another slice with a topping that looks like a mix of herbs and possibly some cheese. 3. Bottom Left: A slice topped with what seems to be bacon and possibly other ingredients like cheese and vegetables. 4. Bottom Centre: A slice with a topping that includes ham and cheese, along with some herbs. 5. Bottom Right: A slice with a topping that appears to include cheese and possibly some herbs or spices. The pizzas are served on white plates, and the overall presentation suggests they are freshly made and ready to eat.</p>
+    <div class="model-tag">LLaVA-NeXT-7B <span class="tok-count">182 tokens</span></div>
+    <p>The image is a composite of two photographs placed side by side, each showing a suitcase with its contents spilled out onto a tiled floor. The left side shows a black suitcase with various items, including a bottle, a toothbrush, and a pair of shoes, among other things. The right side shows a red suitcase with similar items, including a bottle, a toothbrush, and a pair of shoes, as well as other personal care items.<br><br>At the bottom of the image, there is a watermark with the text "baggage" in a stylised font, suggesting that the image may be related to luggage or travel. The focus is on the contents of the suitcases, which are typical of travel items.</p>
   </div>
 </div>
 
