@@ -1,0 +1,345 @@
+---
+layout: post
+title: "Vision-language models on a consumer GPU: four models, 4,004 images, one RTX 3060"
+description: "Four open-weight VLMs, 4,004 requests, 1,001 COCO images. Per-request throughput, VRAM, and power draw: 24.1p total electricity."
+date: 2026-07-DD
+author: Marigold
+category: Engineering
+reading_time: 7
+canonical: "https://marigold.run/blog/vlm-benchmark/"
+og_title: "Vision-language model benchmark on a single RTX 3060 -- Marigold"
+og_description: "Four open-weight VLMs benchmarked locally on one consumer GPU. Per-request power, VRAM, and throughput across 4,004 image requests."
+schema: |
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Vision-language models on a consumer GPU: four models, 4,004 images, one RTX 3060",
+    "datePublished": "2026-07-DD",
+    "dateModified": "2026-07-DD",
+    "author": { "@type": "Organization", "name": "Marigold" },
+    "publisher": { "@type": "Organization", "name": "Marigold", "url": "https://marigold.run" },
+    "mainEntityOfPage": { "@type": "Article", "@id": "https://marigold.run/blog/vlm-benchmark/" }
+  }
+  </script>
+---
+
+<style>
+.post-stat-row {
+  display: flex; gap: 2rem; flex-wrap: wrap;
+  margin: 1.5rem 0 2.5rem; padding: 1.5rem;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+}
+.post-stat        { display: flex; flex-direction: column; gap: 0.25rem; }
+.post-stat-value  { font-size: 2rem; font-family: 'Knewave','Trebuchet MS',sans-serif; color: var(--ink); line-height: 1; }
+.post-stat-label  { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-mid); }
+
+.chart-wrap       { margin: 1.5rem 0 0.5rem; padding: 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
+.chart-wrap canvas { display: block; width: 100% !important; }
+.chart-caption    { font-size: 0.78rem; color: var(--ink-mid); margin: 0.5rem 0 1.5rem; font-style: italic; }
+
+.bm-table         { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.85rem; }
+.bm-table th      { text-align: left; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-mid); border-bottom: 1px solid var(--border); padding: 0.4rem 0.75rem; white-space: nowrap; cursor: pointer; }
+.bm-table th.sort-asc::after  { content: " \25B2"; font-size: 0.6rem; }
+.bm-table th.sort-desc::after { content: " \25BC"; font-size: 0.6rem; }
+.bm-table td      { padding: 0.4rem 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--ink-mid); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
+.bm-table td:first-child { font-family: 'Junction','Trebuchet MS',sans-serif; font-size: 0.85rem; }
+.bm-table tr:last-child td { border-bottom: none; }
+.bm-table tr:hover td { background: var(--surface); }
+
+.seg-legend       { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 0.75rem; font-size: 0.78rem; }
+.seg-chip         { display: flex; align-items: center; gap: 4px; cursor: pointer; padding: 3px 8px; border-radius: 6px; border: 0.5px solid var(--border); color: var(--ink-mid); user-select: none; }
+.seg-chip .dot    { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.seg-chip.off     { opacity: 0.35; }
+
+.example-row      { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+@media (max-width: 640px) { .example-row { grid-template-columns: 1fr; } }
+.example-card     { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.25rem; }
+.example-card .model-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-mid); margin-bottom: 0.5rem; font-family: 'IBM Plex Mono', monospace; }
+.example-card .tok-count { float: right; font-size: 0.7rem; color: var(--ink-mid); font-family: 'IBM Plex Mono', monospace; }
+.example-card p   { font-size: 0.83rem; color: var(--ink-mid); margin: 0; line-height: 1.55; }
+.example-image    { width: 100%; border-radius: 3px; margin-bottom: 1.25rem; display: block; border: 1px solid var(--border); }
+</style>
+
+<!-- -----------------------------------------------------------------------
+   Benchmark data -- crawlable inline JSON
+----------------------------------------------------------------------- -->
+
+<script type="application/json" id="data-vlm-summary">{{ site.data["vlm-benchmark-summary"] | jsonify }}</script>
+
+<script type="application/json" id="data-vlm-caption-lengths">
+[
+  { "model": "PaliGemma2-3B",  "mean_output_tokens": 61.1,  "at_cap": 1   },
+  { "model": "Qwen2.5-VL-7B",  "mean_output_tokens": 108.6, "at_cap": 1   },
+  { "model": "LLaVA-NeXT-7B",  "mean_output_tokens": 195.7, "at_cap": 112 },
+  { "model": "Idefics2-8B",    "mean_output_tokens": 16.3,  "at_cap": 0   }
+]
+</script>
+
+<script type="application/json" id="chart-config">
+[
+  {
+    "data": "data-vlm-summary",
+    "table": "table-vlm-summary",
+    "columns": [
+      { "key": "model",               "label": "Model" },
+      { "key": "params_b",            "label": "Params", "suffix": "B" },
+      { "key": "toks_per_sec",        "label": "Tok/s (median)" },
+      { "key": "input_tokens_mean",   "label": "Input tok (mean)" },
+      { "key": "output_tokens_mean",  "label": "Output tok (mean)" },
+      { "key": "infer_seconds_p50",   "label": "p50 infer (s)" },
+      { "key": "power_watts_mean",    "label": "Power (W)" },
+      { "key": "vram_gb_mean",        "label": "VRAM (GB)" }
+    ],
+    "sort_default": "toks_per_sec",
+    "sort_dir": "desc"
+  },
+  {
+    "data": "data-vlm-summary",
+    "canvas": "chart-vlm-throughput",
+    "chart": {
+      "type": "scatter", "x": "params_b", "y": "toks_per_sec", "label": "model",
+      "x_label": "parameters (billions)", "y_label": "tok/s (median)"
+    }
+  },
+  {
+    "data_url": "/assets/data/vlm-benchmark.json",
+    "canvas": "chart-power",
+    "chart": {
+      "type": "segmented_line", "segment_by": "model", "y": "power_watts_mean",
+      "y_label": "power, mean (W)", "legend_group": "vlm3060", "legend": "seg-legend"
+    }
+  },
+  {
+    "data_url": "/assets/data/vlm-benchmark.json",
+    "canvas": "chart-vram",
+    "chart": {
+      "type": "segmented_line", "segment_by": "model", "y": "vram_usage_bytes_peak",
+      "y_scale": 1e-9, "y_label": "VRAM, peak (GB)", "legend_group": "vlm3060"
+    }
+  },
+  {
+    "data_url": "/assets/data/vlm-benchmark.json",
+    "canvas": "chart-inference",
+    "chart": {
+      "type": "segmented_line", "segment_by": "model", "y": "server_inference_seconds",
+      "y_label": "inference time (s)", "legend_group": "vlm3060"
+    }
+  },
+  {
+    "data": "data-vlm-caption-lengths",
+    "canvas": "chart-caption-lengths",
+    "chart": {
+      "type": "hbar", "x": "mean_output_tokens", "label": "model",
+      "x_label": "mean output tokens per image (256-token cap)"
+    }
+  }
+]
+</script>
+
+<!-- -----------------------------------------------------------------------
+   Page content
+----------------------------------------------------------------------- -->
+
+<main>
+<article class="post-article" itemscope itemtype="https://schema.org/BlogPosting">
+
+<div class="post-body wrap" itemprop="articleBody">
+
+<h1>Vision-language models on a consumer GPU: four models, 4,004 images, one RTX 3060</h1>
+<p>Four open-weight vision-language models, 1,001 distinct images from COCO val2017, 4,004 requests total, run on a single RTX 3060 through Marigold's local Docker Compose stack.</p>
+
+<div class="post-stat-row">
+  <div class="post-stat"><span class="post-stat-value">4</span><span class="post-stat-label">VLM models</span></div>
+  <div class="post-stat"><span class="post-stat-value">4,004</span><span class="post-stat-label">Requests</span></div>
+  <div class="post-stat"><span class="post-stat-value">1,001</span><span class="post-stat-label">Distinct images</span></div>
+  <div class="post-stat"><span class="post-stat-value">1</span><span class="post-stat-label">GPU</span></div>
+  <div class="post-stat"><span class="post-stat-value">24.1p</span><span class="post-stat-label">Electricity</span></div>
+</div>
+
+<h2>Setup</h2>
+
+<p>One RTX 3060 12 GB, running Marigold's local Docker Compose stack -- Postgres for the queue, a single worker process, no cloud component in the path.
+Each of the four models processed 1,001 COCO val2017 images in sequence, with the prompt "Describe this image." and a 256-token output cap.
+Images were downloaded once before the run and held in memory as base64 data URIs, so no per-request network fetch contributed to timing.
+Every request captures server-side inference time, peak VRAM, and GPU power draw directly from the worker process via <code>nvml</code>, using the same telemetry pipeline as the <a href="/blog/self-hosted-inference-benchmark/">instruct model benchmark</a>.</p>
+
+<p>One model was excluded: <code>HuggingFaceTB/SmolVLM2-2.2B-Instruct</code> requires <code>AutoModelForImageTextToText</code> rather than the <code>AutoModelForVision2Seq</code> class the current handler uses. This is a handler limitation, not a model deficiency, and is noted for a future handler revision.</p>
+
+<h2>Models</h2>
+
+<p>The four models span three families and two vision-encoding strategies. The 3B and 8B parameter counts include the vision encoder and projection layers, not the language model backbone alone.</p>
+
+<table class="bm-table">
+  <thead><tr>
+    <th>Model</th><th>Family</th><th>Params</th><th>Quant</th><th>Vision encoding</th>
+  </tr></thead>
+  <tbody>
+    <tr><td>google/paligemma2-3b-mix-448</td><td>PaliGemma</td><td>3B</td><td>bf16</td><td>Fixed 1,030 tokens per image</td></tr>
+    <tr><td>qwen/qwen2.5-vl-7b-instruct</td><td>Qwen2.5-VL</td><td>7B</td><td>NF4</td><td>Dynamic: 73--554 tokens per image</td></tr>
+    <tr><td>llava-hf/llava-v1.6-mistral-7b-hf</td><td>LLaVA-NeXT</td><td>7B</td><td>NF4</td><td>Dynamic anyres tiling: 1,277--2,943 tokens</td></tr>
+    <tr><td>huggingfacem4/idefics2-8b</td><td>Idefics2</td><td>8B</td><td>NF4</td><td>Fixed 338 tokens per image</td></tr>
+  </tbody>
+</table>
+
+<p>PaliGemma2 and Idefics2 use fixed-grid encoders that resize every image to a predetermined resolution before encoding, producing an identical token count regardless of aspect ratio or content.
+Qwen2.5-VL and LLaVA-NeXT use dynamic encoders that tile or crop based on the input image's dimensions.
+LLaVA-NeXT's anyres strategy is the most aggressive: a single image that produces 338 tokens in Idefics2 produces up to 2,943 tokens in LLaVA-NeXT, depending on its native resolution.</p>
+
+<h2>Throughput and parameters</h2>
+
+<div class="chart-wrap">
+  <canvas id="chart-vlm-throughput" height="340"></canvas>
+</div>
+<p class="chart-caption">Median output tok/s vs parameter count. PaliGemma2 runs bf16; the three 7--8B models run NF4 4-bit quantisation.</p>
+
+<table class="bm-table" id="table-vlm-summary">
+  <thead><tr></tr></thead>
+  <tbody></tbody>
+</table>
+
+<h2>Vision encoding is the throughput variable</h2>
+
+<p>Parameter count does not predict throughput in this set. PaliGemma2 at 3B leads at 28.8 tok/s median; Idefics2 at 8B trails at 4.6 tok/s. The figure that tracks throughput is input token count.</p>
+
+<p>PaliGemma2 passes exactly 1,030 tokens to the language model for every image, across all 1,001 images and every aspect ratio in the set.
+Idefics2 passes exactly 338.
+Qwen2.5-VL produced a mean of 370 input tokens, ranging from 73 to 554 across the dataset.
+LLaVA-NeXT produced a mean of 2,229 tokens, ranging from 1,277 to 2,943.</p>
+
+<p>LLaVA-NeXT's mean inference time is 14.75 seconds per image against PaliGemma2's 2.01 seconds.
+Parameter count (7B vs 3B) accounts for a fraction of that gap; the remainder is the attention computation over a token sequence that is, on average, more than twice as long as Qwen2.5-VL and seven times as long as PaliGemma2.</p>
+
+<p>Dynamic encoders preserve more image detail than fixed-grid encoders, which matters for tasks where image content is dense: OCR, chart reading, document processing.
+The COCO val2017 images used in this benchmark are general scene photography and do not stress that difference.
+A document or chart benchmark would produce a different throughput ordering.</p>
+
+<h2>Per-request telemetry</h2>
+
+<p>Three views of the same 4,004 requests, in run order.
+Click any model in the legend to hide or show it across all three charts.</p>
+
+<div class="seg-legend" id="seg-legend"></div>
+
+<div class="chart-wrap">
+  <canvas id="chart-power" height="220"></canvas>
+</div>
+<div class="chart-wrap">
+  <canvas id="chart-vram" height="220"></canvas>
+</div>
+<div class="chart-wrap">
+  <canvas id="chart-inference" height="220"></canvas>
+</div>
+
+<p>The charts show:
+<ol>
+<li>Mean GPU power draw per request in watts, as reported by <code>nvml</code>.</li>
+<li>Peak VRAM per request in GB, including activations and static model layers.</li>
+<li>Server-side inference time per request in seconds.</li>
+</ol>
+</p>
+
+<p>PaliGemma2's power draw (mean 78.5 W) sits well below the three larger models.
+This reflects both the smaller parameter count and the shorter per-request inference time: less sustained compute load means less energy drawn per image.
+LLaVA-NeXT runs at 138.3 W mean for 14.75 seconds per image; PaliGemma2 runs at 78.5 W for 2.01 seconds.
+The energy per image compounds across the dataset.</p>
+
+<p>Idefics2's load time (mean 62.86 seconds per request) is an order of magnitude above the other three.
+This is the consequence of running with <code>idle_timeout=0</code> in the worker configuration: the model reloads from scratch on every request rather than staying resident between calls.
+The reload cost appears in every row of the telemetry rather than as a one-time cold-start cost.
+The inference time itself (mean 3.44 seconds) is within the range of the other models; the load time is not.</p>
+
+<p>LLaVA-NeXT's VRAM peak (mean 5.62 GB) is lower than Qwen2.5-VL (6.74 GB) and Idefics2 (6.94 GB) despite substantially longer input sequences.
+All three are NF4 4-bit quantised; the VRAM difference between them reflects activation memory during encoding rather than weight size.</p>
+
+<h2>The same image, four models</h2>
+
+<p>COCO image 8629 is a six-panel grid of pizza photographs.
+It is a useful illustration because it has composite structure that models may or may not recognise, and because the four responses differ in length by a factor of 25 despite the same prompt and the same input.</p>
+
+<img class="example-image" src="http://images.cocodataset.org/val2017/000000008629.jpg"
+     alt="COCO val2017 image 8629: a six-panel grid of pizza photographs on white plates"
+     loading="lazy" style="max-width: 600px;">
+
+<div class="example-row">
+  <div class="example-card">
+    <div class="model-tag">PaliGemma2-3B <span class="tok-count">112 tokens</span></div>
+    <p>A collage of photos showcasing various slices of pizza on white plates. The pizzas vary in toppings, with some featuring cheese, meat, vegetables, and sauce. A fork rests on the plate, while a knife lies partially on the pizza. The crust of the pizza is visible in some photos, while others have a crispy texture. The cheese is melted on the pizza, creating a mouthwatering aroma. The plates are arranged in a grid, with three slices on the top and two slices on the bottom. The overall image showcases a delightful feast for the eyes.</p>
+  </div>
+  <div class="example-card">
+    <div class="model-tag">Idefics2-8B <span class="tok-count">10 tokens</span></div>
+    <p>Six pictures of pizza on plates are shown.</p>
+  </div>
+  <div class="example-card">
+    <div class="model-tag">LLaVA-NeXT-7B <span class="tok-count">256 tokens (cap)</span></div>
+    <p>The image is a collage of six photographs featuring slices of pizza. The pizza slices are presented on white plates, and the backgrounds of the photographs are blurred, drawing focus to the pizza. In the top left photo, a slice of pizza is placed on a white plate, with a fork and knife visible in the background. The pizza has a golden-brown crust and is topped with melted cheese and what appears to be tomato sauce. The top right photo shows a close-up of a pizza slice with a thick crust, topped with a generous amount of cheese and what could be herbs or spices. The bottom left photo features a slice of pizza with a thin crust, topped with cheese and what seems to be a meat topping, possibly pepperoni. The bottom middle photo displays a slice of pizza with a thick crust, topped with cheese and a vegetable topping, possibly mushrooms or bell peppers. The bottom right photo shows a slice of pizza with a thin crust, topped with cheese and a meat topping, possibly sausage. The bottom left photo is a close-up of a slice of pizza</p>
+  </div>
+  <div class="example-card">
+    <div class="model-tag">Qwen2.5-VL-7B <span class="tok-count">188 tokens</span></div>
+    <p>This image is a collage of six photos, each showcasing different slices of pizza. The pizzas appear to be from the same restaurant or type of establishment, as they share similar toppings and styles. Here's a breakdown of what can be observed in each photo: 1. Top Left: A close-up of a slice with melted cheese and possibly some tomato sauce underneath. 2. Top Right: Another slice with a topping that looks like a mix of herbs and possibly some cheese. 3. Bottom Left: A slice topped with what seems to be bacon and possibly other ingredients like cheese and vegetables. 4. Bottom Centre: A slice with a topping that includes ham and cheese, along with some herbs. 5. Bottom Right: A slice with a topping that appears to include cheese and possibly some herbs or spices. The pizzas are served on white plates, and the overall presentation suggests they are freshly made and ready to eat.</p>
+  </div>
+</div>
+
+<p>Idefics2 produces a single accurate sentence.
+PaliGemma2 identifies the grid structure and describes it as a collage, producing a flowing paragraph.
+Qwen2.5-VL enumerates each panel by position and produces a structured list with spatial references.
+LLaVA-NeXT also enumerates by position but reaches the 256-token cap mid-sentence on the final panel, the only model to do so on this image.
+All four descriptions are accurate; the differences are in structure, verbosity, and spatial reasoning, not in factual correctness.</p>
+
+<h2>Caption length as a model characteristic</h2>
+
+<p>Across 1,001 images with the same prompt and the same 256-token cap, the four models produced outputs with mean lengths of 16.3, 61.1, 108.6, and 195.7 tokens respectively.
+These differences are stable across the dataset: Idefics2 produces roughly 16 tokens on a simple scene and roughly 16 tokens on a six-panel composite; LLaVA-NeXT produces roughly 195 tokens on both.
+Caption length is a property of how each model was trained, not a response to image complexity.</p>
+
+<div class="chart-wrap">
+  <canvas id="chart-caption-lengths" height="200"></canvas>
+</div>
+<p class="chart-caption">Mean output tokens per image across 1,001 COCO val2017 images, 256-token cap. LLaVA-NeXT hit the cap on 112 of 1,001 images; the other three hit it on at most 1.</p>
+
+<p>This matters for cost at scale.
+LLaVA-NeXT ran at 138.3 W mean for 14.75 seconds per image and consumed 13.97p of electricity across 1,001 images.
+PaliGemma2 ran at 78.5 W for 2.01 seconds per image and consumed 1.20p across the same set.
+Both received the same prompt against the same images.
+The energy difference is not primarily explained by parameter count (7B vs 3B) or by quantisation (both NF4 and bf16 are in the set at different output lengths).
+It is explained by the number of tokens generated: more tokens means more decode steps, more time under sustained GPU load, and more energy drawn per image.
+Choosing a model for a batch captioning or indexing workload therefore requires understanding its natural output length on the target content, not only its benchmark throughput figure.</p>
+
+<h2>Run totals</h2>
+
+<p>Across all 4,004 requests: zero failures.
+Total inference energy: 976.9 Wh.
+At the Ofgem direct-debit cap (24.67p/kWh, April--June 2026), that is <strong>24.1 pence for 4,004 image captioning requests across four vision-language models</strong>, on hardware with no cloud account and no managed infrastructure.</p>
+
+<p>LLaVA-NeXT accounts for 13.97p of the 24.1p total.
+Idefics2 accounts for 3.27p.
+Qwen2.5-VL accounts for 5.66p.
+PaliGemma2 accounts for 1.20p.</p>
+
+<h2>Observations</h2>
+
+<p><strong>Input token count, not parameter count, determines throughput.</strong>
+The throughput ordering -- PaliGemma2 at 28.8 tok/s, Qwen2.5-VL at 16.5 tok/s, LLaVA-NeXT at 13.4 tok/s, Idefics2 at 4.6 tok/s -- does not match the parameter ordering.
+It matches the mean input token count in reverse, with one exception: Idefics2's 338 fixed input tokens producing lower throughput than Qwen2.5-VL's 370 mean, which **does** reflect Idefics2's larger parameter count.</p>
+
+<p><strong>LLaVA-NeXT's stop token issue resolved at 256 tokens.</strong>
+In an earlier 64-token run, LLaVA-NeXT hit the cap on all 1,001 images with a <code>stop</code> finish reason that was inconsistent with truncation.
+At 256 tokens, it hit the cap on 112 of 1,001 images and stopped naturally on the remaining 889.
+The model's natural completion length for scene descriptions sits in the 150--220 token range; the 64-token cap was below that range for most images.</p>
+
+<p><strong>Idefics2's load time dominates its elapsed time.</strong>
+The 62.86-second mean load time per request is a configuration effect, not a model property.
+With <code>idle_timeout</code> raised to keep the model resident between requests, the per-request load cost would collapse to a single cold-start event across the full 1,001-image pass.</p>
+
+<h2>Implementation notes</h2>
+
+<p>The benchmark harness is published under <code>img2txt-providers</code> in the <code>marigold-benchmarks</code> repository.
+Images are sourced from COCO val2017, downloaded via the <code>coco_val2017</code> generator in <code>image_sources.py</code> with MD5-keyed local caching.
+The raw results CSV, conversion script, and per-request JSON data file are included alongside the post.</p>
+
+</div>
+</article>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="/assets/js/benchmark-charts.js"></script>

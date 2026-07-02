@@ -1,0 +1,62 @@
+[
+  {
+    "model": "PaliGemma2-3B",
+    "model_full": "google/paligemma2-3b-mix-448",
+    "family": "gemma",
+    "params_b": 3.0,
+    "n": 1001,
+    "toks_per_sec": 28.8,
+    "infer_seconds_p50": 1.6,
+    "input_tokens_mean": 1030,
+    "output_tokens_mean": 61.1,
+    "power_watts_mean": 78.5,
+    "vram_gb_mean": 6.28,
+    "energy_wh": 48.6,
+    "energy_pence": 1.2
+  },
+  {
+    "model": "Qwen2.5-VL-7B",
+    "model_full": "qwen/qwen2.5-vl-7b-instruct",
+    "family": "qwen",
+    "params_b": 7.0,
+    "n": 1001,
+    "toks_per_sec": 16.5,
+    "infer_seconds_p50": 6.48,
+    "input_tokens_mean": 370.0,
+    "output_tokens_mean": 108.6,
+    "power_watts_mean": 125.1,
+    "vram_gb_mean": 6.74,
+    "energy_wh": 229.4,
+    "energy_pence": 5.66
+  },
+  {
+    "model": "LLaVA-NeXT-7B",
+    "model_full": "llava-hf/llava-v1.6-mistral-7b-hf",
+    "family": "other",
+    "params_b": 7.0,
+    "n": 1001,
+    "toks_per_sec": 13.4,
+    "infer_seconds_p50": 15.01,
+    "input_tokens_mean": 2229.0,
+    "output_tokens_mean": 195.7,
+    "power_watts_mean": 138.3,
+    "vram_gb_mean": 5.62,
+    "energy_wh": 566.4,
+    "energy_pence": 13.972
+  },
+  {
+    "model": "Idefics2-8B",
+    "model_full": "huggingfacem4/idefics2-8b",
+    "family": "other",
+    "params_b": 8.0,
+    "n": 1001,
+    "toks_per_sec": 4.6,
+    "infer_seconds_p50": 3.46,
+    "input_tokens_mean": 338,
+    "output_tokens_mean": 16.3,
+    "power_watts_mean": 138.5,
+    "vram_gb_mean": 6.94,
+    "energy_wh": 132.5,
+    "energy_pence": 3.269
+  }
+]
