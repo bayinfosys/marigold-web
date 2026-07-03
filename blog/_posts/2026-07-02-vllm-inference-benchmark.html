@@ -130,7 +130,9 @@ schema: |
     "data": "data-vlm-caption-lengths",
     "canvas": "chart-caption-lengths",
     "chart": {
-      "type": "hbar", "x": "mean_output_tokens", "label": "model",
+      "type": "hbar",
+      "label_key": "model",
+      "value_key": "mean_output_tokens",
       "x_label": "mean output tokens per image (256-token cap)"
     }
   }
