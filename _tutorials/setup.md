@@ -1,11 +1,11 @@
 ---
-layout: example
+layout: tutorial
 title: "Setting up Marigold: a self-hosted inference stack in one command"
 description: "Clone, configure, and run Marigold locally with Docker Compose -- API, workers, and Open WebUI, no cloud dependency."
 date: 2026-07-27
 category: Engineering
 reading_time: 6
-canonical: "https://marigold.run/examples/setup/"
+canonical: "https://marigold.run/tutorials/setup.html"
 og_title: "Setting up Marigold -- self-hosted in one command"
 og_description: "Clone, configure, and run Marigold locally with Docker Compose. No cloud dependency, runs airgapped once set up."
 schema: |
@@ -18,7 +18,7 @@ schema: |
     "dateModified": "2026-07-27",
     "author": { "@type": "Organization", "name": "Marigold" },
     "publisher": { "@type": "Organization", "name": "Marigold", "url": "https://marigold.run" },
-    "mainEntityOfPage": { "@type": "TechArticle", "@id": "https://marigold.run/examples/setup/" }
+    "mainEntityOfPage": { "@type": "TechArticle", "@id": "https://marigold.run/tutorials/setup.html" }
   }
   </script>
 ---
