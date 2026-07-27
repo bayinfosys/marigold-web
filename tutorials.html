@@ -18,21 +18,17 @@ og_description: "Worked tutorials for the self-hosted Marigold stack."
   </div>
 </section>
 
-<section class="blog-list">
+<section class="usecases">
   <div class="wrap">
-    {% for tutorial in site.tutorials %}
-    <div class="faq-item">
-      <p class="section-label">
-        <time datetime="{{ tutorial.date | date_to_xmlschema }}">
-          {{ tutorial.date | date: "%-d %B %Y" }}
-        </time>
-        {% if tutorial.category %}&nbsp;&mdash;&nbsp;{{ tutorial.category }}{% endif %}
-      </p>
-      <p class="faq-q"><a href="{{ tutorial.url }}" style="color:inherit;text-decoration:none;">{{ tutorial.title }}</a></p>
-      {% if tutorial.description %}<p class="faq-a">{{ tutorial.description }}</p>{% endif %}
-      <p class="faq-a"><a href="{{ tutorial.url }}" style="color:var(--amber);font-family:'Junction','Trebuchet MS',sans-serif;font-size:0.82rem;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;">Read &rarr;</a></p>
+    <div class="usecase-grid">
+      {% for tutorial in site.tutorials %}
+      <a class="usecase-card" href="{{ tutorial.url }}">
+        {% if tutorial.category %}<p class="hero-eyebrow">{{ tutorial.category }}</p>{% endif %}
+        <h4>{{ tutorial.title }}</h4>
+        {% if tutorial.description %}<p>{{ tutorial.description }}</p>{% endif %}
+      </a>
+      {% endfor %}
     </div>
-    {% endfor %}
     {% if site.tutorials.size == 0 %}
     <p class="faq-a">No tutorials yet.</p>
     {% endif %}
