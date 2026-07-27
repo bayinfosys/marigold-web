@@ -2,15 +2,8 @@
   <div class="wrap">
     <a href="/" class="wordmark">Marigold</a>
     <div class="nav-links">
-      {% if page.nav_links %}
-        {% for link in page.nav_links %}
-          <a href="{{ link.href }}"{% if link.cta %} class="cta-sm"{% endif %}>{{ link.text }}</a>
-        {% endfor %}
-      {% else %}
-        <a href="/pricing">Pricing</a>
-        <a href="/developers">Developers</a>
-        <a href="#waitlist" class="cta-sm">Join waitlist</a>
-      {% endif %}
+      <a href="/tutorials.html">Tutorials</a>
+      <a href="https://github.com/bayinfosys/marigold" class="cta-sm">View on GitHub</a>
     </div>
   </div>
 </nav>

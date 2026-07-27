@@ -227,11 +227,16 @@ layout: default
 
   </article>
 
+  {% include related.html %}
+
   <section class="tagline-break">
     <div class="wrap">
-      <h2 class="slogan">Private UK inference. Available now.</h2>
-      <p>Marigold is in limited release. Register for early access below.</p>
-      {% include waitlist_form.html source="blog" %}
+      <h2 class="slogan">Run it yourself.</h2>
+      <p>Marigold is open source. Clone the repo and have it running locally in one command.</p>
+      <div class="hero-actions">
+        <a href="https://github.com/bayinfosys/marigold" class="btn-primary">View on GitHub</a>
+        <a href="/tutorials/setup.html" class="btn-secondary">Read the setup guide</a>
+      </div>
     </div>
   </section>
 

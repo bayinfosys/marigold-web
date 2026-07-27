@@ -1,0 +1,42 @@
+---
+layout: default
+title: "Tutorials -- Marigold"
+description: "Worked tutorials for running Marigold locally: setup, local RAG, agent workflows, and IDE integration."
+canonical: "https://marigold.run/tutorials.html"
+permalink: /tutorials.html
+og_title: "Tutorials -- Marigold"
+og_description: "Worked tutorials for the self-hosted Marigold stack."
+---
+
+<main>
+
+<section class="hero hero--compact">
+  <div class="wrap">
+    <p class="hero-eyebrow">Tutorials</p>
+    <h1 class="slogan">Worked tutorials, run on your own machine.</h1>
+    <p class="hero-sub">Every tutorial assumes a working local setup. Start with setup if you haven't got a stack running yet.</p>
+  </div>
+</section>
+
+<section class="blog-list">
+  <div class="wrap">
+    {% for tutorial in site.tutorials %}
+    <div class="faq-item">
+      <p class="section-label">
+        <time datetime="{{ tutorial.date | date_to_xmlschema }}">
+          {{ tutorial.date | date: "%-d %B %Y" }}
+        </time>
+        {% if tutorial.category %}&nbsp;&mdash;&nbsp;{{ tutorial.category }}{% endif %}
+      </p>
+      <p class="faq-q"><a href="{{ tutorial.url }}" style="color:inherit;text-decoration:none;">{{ tutorial.title }}</a></p>
+      {% if tutorial.description %}<p class="faq-a">{{ tutorial.description }}</p>{% endif %}
+      <p class="faq-a"><a href="{{ tutorial.url }}" style="color:var(--amber);font-family:'Junction','Trebuchet MS',sans-serif;font-size:0.82rem;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;">Read &rarr;</a></p>
+    </div>
+    {% endfor %}
+    {% if site.tutorials.size == 0 %}
+    <p class="faq-a">No tutorials yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+</main>

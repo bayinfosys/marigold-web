@@ -1,0 +1,19 @@
+{% if page.related %}
+<section class="related-work">
+  <div class="wrap">
+    <p class="section-label">See also</p>
+    <ul class="related-list">
+      {% assign pool = site.posts | concat: site.tutorials %}
+      {% for slug in page.related %}
+        {% assign rel = pool | where: "slug", slug | first %}
+        {% if rel %}
+        <li>
+          <a href="{{ rel.url | relative_url }}">{{ rel.title }}</a>
+          {% if rel.description %}<span class="related-desc"> &mdash; {{ rel.description }}</span>{% endif %}
+        </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}

@@ -3,24 +3,31 @@ url: https://marigold.run
 baseurl: ""
 
 description: >
-  Private hosting for open-weight HuggingFace models.
-  Typed async inference API, declarative workflow engine,
-  and evals built from your production data.
-
-api_base: https://api.dev.mdl.bayis.co.uk
-waitlist_api_base: https://api.dev.clientlog.bayis.co.uk/v1
+  Self-hosted, open source inference platform for open-weight
+  HuggingFace models. Typed async API, declarative workflow engine,
+  and an eval surface, running on your own hardware.
 
 plugins:
   - jekyll-sitemap
 
 permalink: /:basename:output_ext
 
+collections:
+  tutorials:
+    output: true
+    permalink: /tutorials/:path.html
+
 defaults:
   - scope:
       path: ""
       type: posts
     values:
-      permalink: /blog/:slug/
+      permalink: /blog/:slug.html
+  - scope:
+      path: ""
+      type: tutorials
+    values:
+      layout: tutorial
 
 exclude:
   - Gemfile

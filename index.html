@@ -1,18 +1,10 @@
 ---
 layout: default
-title: "Marigold -- Private HuggingFace Model Hosting and Inference Pipelines"
-description: "Marigold hosts open-weight HuggingFace models on private AWS in London. Typed async inference API, declarative YAML workflow engine, and an eval surface for measuring output quality against your production data."
+title: "Marigold -- Self-Hosted, Private AI Inference API"
+description: "Marigold is a self-hosted, open source inference platform for open-weight models. Runs airgapped once set up. Typed API, declarative workflows, evals -- on your own hardware, on-premises."
 canonical: "https://marigold.run/"
-og_title: "Marigold -- Private Model Hosting and Inference Pipelines"
-og_description: "Open-weight models on private AWS in London. Typed inference API, declarative workflow engine, and evals built from your production data."
-nav_links:
-  - text: Pricing
-    href: /pricing.html
-  - text: Developers
-    href: /developers.html
-  - text: Join waitlist
-    href: "#waitlist"
-    cta: true
+og_title: "Marigold -- Self-Hosted, Private AI Inference API"
+og_description: "Self-hosted, open source inference platform for open-weight models. Airgapped, on-premises, no cloud dependency."
 schema: |
   <script type="application/ld+json">
   {
@@ -20,19 +12,9 @@ schema: |
     "@type": "SoftwareApplication",
     "name": "Marigold",
     "url": "https://marigold.run/",
-    "description": "Private hosting for open-weight HuggingFace models on AWS in London. Typed async inference API, declarative YAML workflow engine, and an eval surface for measuring output quality.",
+    "description": "Self-hosted, open source inference platform for open-weight models. Runs airgapped once set up. Typed async API, declarative workflow engine, evals.",
     "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "AWS",
-    "offers": {
-      "@type": "Offer",
-      "priceSpecification": {
-        "@type": "PriceSpecification",
-        "price": "19",
-        "priceCurrency": "GBP",
-        "billingPeriod": "P1M"
-      },
-      "description": "From £19/month. Flat rate, no token billing."
-    },
+    "operatingSystem": "Linux, Docker",
     "provider": {
       "@type": "Organization",
       "name": "Bay Information Systems",
@@ -46,20 +28,18 @@ schema: |
 
 <section class="hero">
   <div class="wrap">
-    <p class="hero-eyebrow">Private model hosting. Typed workflows. Evals.</p>
+    <p class="hero-eyebrow">Self-hosted inference. Typed workflows. Evals.</p>
     <h1 class="slogan">Self-hosted open-weight inference, done properly.</h1>
     <p class="hero-tagline">Define your task. Build your pipeline. Measure and improve.</p>
     <p class="hero-sub">
-      Most AI inference pipelines are built once per engagement and discarded.
-      Marigold is the layer you bring once and keep: open-weight models on private
-      AWS in London, a typed async inference API, declarative YAML workflows, and
-      an eval surface that sharpens with production use. No request reaches OpenAI,
-      Anthropic, or any other external provider.
-      From <a href="/pricing.html">£19/month</a>, flat rate.
+      Open-weight models on your own hardware. A typed async inference API,
+      declarative YAML workflows, and an eval surface that sharpens with use.
+      Runs airgapped once set up -- no request ever reaches OpenAI, Anthropic,
+      or any other external provider. Open source, free to run.
     </p>
     <div class="hero-actions">
       <a href="#usecases" class="btn-primary">See what it runs</a>
-      <a href="#waitlist" class="btn-secondary">Join the waitlist</a>
+      <a href="https://github.com/bayinfosys/marigold" class="btn-secondary">View on GitHub</a>
     </div>
   </div>
 </section>
@@ -67,12 +47,12 @@ schema: |
 <section class="statement">
   <div class="wrap">
     <p>
-      Inference runs on private AWS in London. No request leaves UK jurisdiction,
-      no third-party model provider is in the request path, and no inference input
-      is retained for training.
-      <strong>For regulated sectors, that combination resolves the constraint
-      before procurement begins.</strong>
-      <a href="/data-sovereign.html">Architecture and compliance detail &rarr;</a>
+      Runs on hardware you control. No request leaves the machine, no
+      third-party model provider sits in the path, nothing is retained
+      outside the directory you point it at.
+      <strong>For regulated sectors, that resolves the data question
+      before procurement starts.</strong>
+      <a href="/data-sovereign.html">Architecture detail &rarr;</a>
     </p>
   </div>
 </section>
@@ -84,26 +64,23 @@ schema: |
       <div class="pillar">
         <p class="pillar-num">01</p>
         <h3>Private Inference API</h3>
-        <p>A unified async API over self-hosted HuggingFace models covering
-        text, image, audio, and cross-modal operations. One container image,
-        one weight cache, per-model isolation. The marginal cost of
-        adding a model falls with each one added.</p>
+        <p>A unified async API over self-hosted HuggingFace models: text,
+        image, audio, cross-modal. One container image, one weight cache,
+        per-model isolation.</p>
       </div>
       <div class="pillar">
         <p class="pillar-num">02</p>
         <h3>Workflow execution</h3>
         <p>Declarative YAML pipelines over the model registry. Steps declare
-        typed inputs and outputs; the executor resolves the dependency graph,
-        runs independent steps in parallel, and advances on result.
-        Every step has an audit trail.</p>
+        typed inputs and outputs; the executor resolves the dependency graph
+        and runs independent steps in parallel. Every step is audited.</p>
       </div>
       <div class="pillar">
         <p class="pillar-num">03</p>
         <h3>Evals</h3>
-        <p>Run any model or pipeline against a labelled dataset. Score outputs
-        using the same handler registry. Build custom eval libraries from
-        production runs and corrected outputs. The task specification
-        sharpens with use.</p>
+        <p>Run any model or pipeline against a labelled dataset, scored by
+        the same handler registry. Build eval libraries from production
+        runs and corrections. The spec sharpens with use.</p>
       </div>
     </div>
   </div>
@@ -115,9 +92,9 @@ schema: |
     <div class="usecase-grid">
       <div class="usecase-card">
         <h4>Content ingestion and moderation</h4>
-        <p>Extract text, generate embeddings, classify by category, and gate
-        restricted content before it reaches an index. Text and image embeddings
-        produced in the same pipeline enable cross-modal search.</p>
+        <p>Extract text, embed, classify, and gate restricted content before
+        it reaches an index. Text and image embeddings in one pipeline
+        enable cross-modal search.</p>
         <div class="usecase-tags">
           <span class="tag">img2txt</span>
           <span class="tag">text-embed</span>
@@ -127,9 +104,9 @@ schema: |
       </div>
       <div class="usecase-card">
         <h4>Quality-gated image generation</h4>
-        <p>Generate, score for safety, aesthetic quality, and prompt alignment.
-        Reset and regenerate automatically until thresholds are met or
-        attempt limits are reached.</p>
+        <p>Generate, score for safety, aesthetic quality, and prompt
+        alignment. Regenerate automatically until thresholds are met or
+        attempts run out.</p>
         <div class="usecase-tags">
           <span class="tag">txt2img</span>
           <span class="tag">image-eval</span>
@@ -138,9 +115,9 @@ schema: |
       </div>
       <div class="usecase-card">
         <h4>Visual conformance checking</h4>
-        <p>Compare an observation image against a reference using structural
-        embeddings. On deviation, segment both images, diff the masks, and
-        produce a natural-language description of the discrepancy.</p>
+        <p>Compare an observation image against a reference by structural
+        embedding. On deviation, segment both, diff the masks, and describe
+        the discrepancy in natural language.</p>
         <div class="usecase-tags">
           <span class="tag">image-embed</span>
           <span class="tag">img2mask</span>
@@ -151,8 +128,8 @@ schema: |
       <div class="usecase-card">
         <h4>Document briefing and audio delivery</h4>
         <p>Extract entities, classify, summarise, and convert to speech in
-        multiple languages from a single workflow submission. Output is a
-        written summary plus audio files, one per target language.</p>
+        multiple languages from one workflow submission. Output: a summary
+        plus audio per language.</p>
         <div class="usecase-tags">
           <span class="tag">img2txt</span>
           <span class="tag">instruct</span>
@@ -162,8 +139,8 @@ schema: |
       <div class="usecase-card">
         <h4>Batch tabular classification</h4>
         <p>Classify large volumes of unlabelled rows against a small labelled
-        example set. Low-confidence predictions are passed to an instruct model
-        for natural-language explanation. No retraining required.</p>
+        set. Low-confidence predictions go to an instruct model for
+        explanation. No retraining.</p>
         <div class="usecase-tags">
           <span class="tag">tabular-classify</span>
           <span class="tag">instruct</span>
@@ -171,9 +148,9 @@ schema: |
       </div>
       <div class="usecase-card">
         <h4>Site monitoring with change detection</h4>
-        <p>Embed and compare images from multiple monitored locations in parallel.
-        On detected change, describe what changed and assemble a report.
-        Deliver as text and audio on a schedule.</p>
+        <p>Embed and compare images from multiple locations in parallel. On
+        change, describe it and assemble a report, delivered as text and
+        audio on a schedule.</p>
         <div class="usecase-tags">
           <span class="tag">image-embed</span>
           <span class="tag">img2txt</span>
@@ -204,10 +181,10 @@ schema: |
         <h3>Workflow features</h3>
         <ul>
           <li>Shared state across steps</li>
-          <li>Sequential and parallel step execution</li>
-          <li>Conditional branching on model output values</li>
+          <li>Sequential and parallel execution</li>
+          <li>Conditional branching on output values</li>
           <li>Halt and reject with a structured result</li>
-          <li>Prompt interpolation from prior step outputs</li>
+          <li>Prompt interpolation from prior outputs</li>
           <li>Per-step audit trail -- status, timing, output, run count</li>
         </ul>
       </div>
@@ -217,21 +194,19 @@ schema: |
       <a href="https://pypi.org/project/runfox/">runfox</a>
       and
       <a href="https://pypi.org/project/json-logic-path/">json-logic-path</a>,
-      open source libraries available on PyPI.
+      both open source on PyPI.
     </p>
   </div>
 </section>
 
-<section class="tagline-break" id="waitlist">
+<section class="tagline-break">
   <div class="wrap">
-    <h2 class="slogan">Production AI pipelines should not be built from scratch each time.</h2>
-    <p>Paid plans are in limited release. Leave your email and we will reach out when access opens.</p>
-    {% include waitlist_form.html
-       source="index"
-       heading="Join the waitlist"
-       subtext="No spam. One email when your tier opens."
-       placeholder="you@example.com"
-       button="Join waitlist" %}
+    <h2 class="slogan">Stop rebuilding your inference stack per engagement.</h2>
+    <p>Open source. Clone it, run it on your own hardware.</p>
+    <div class="hero-actions">
+      <a href="https://github.com/bayinfosys/marigold" class="btn-primary">View on GitHub</a>
+      <a href="/tutorials/setup.html" class="btn-secondary">Read the setup guide</a>
+    </div>
     <p style="margin-top:1.5rem;font-size:0.875rem;color:var(--ink-mid);">
       Questions? <a href="mailto:ed@bayis.co.uk">ed@bayis.co.uk</a>
     </p>

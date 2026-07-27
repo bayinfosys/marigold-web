@@ -1,0 +1,44 @@
+---
+layout: default
+---
+<style>
+/* Shares .post-* classes with post.html -- move both to style.css together
+   when the blog collection styling gets consolidated. */
+</style>
+
+<main>
+
+  <article itemscope itemtype="https://schema.org/TechArticle">
+
+    <header class="post-header">
+      <div class="wrap">
+        {% if page.category %}<p class="hero-eyebrow">{{ page.category }}</p>{% endif %}
+        <p class="post-meta">
+          <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+            {{ page.date | date: "%-d %B %Y" }}
+          </time>
+          {% if page.reading_time %}&nbsp;&mdash;&nbsp;{{ page.reading_time }} min read{% endif %}
+        </p>
+      </div>
+    </header>
+
+    <div class="post-body wrap" itemprop="articleBody">
+      {{ content }}
+    </div>
+
+  </article>
+
+  {% include related.html %}
+
+  <section class="tagline-break">
+    <div class="wrap">
+      <h2 class="slogan">Try it yourself.</h2>
+      <p>All example code is in the repo. Clone it and run this tutorial locally.</p>
+      <div class="hero-actions">
+        <a href="https://github.com/bayinfosys/marigold" class="btn-primary">View on GitHub</a>
+        <a href="/tutorials/setup.html" class="btn-secondary">Read the setup guide</a>
+      </div>
+    </div>
+  </section>
+
+</main>

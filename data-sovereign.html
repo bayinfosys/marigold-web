@@ -1,18 +1,10 @@
 ---
 layout: default
-title: "GDPR-Compliant AI API, EU and UK Inference -- Marigold | Private LLM"
-description: "Private LLM inference in UK and EU AWS regions. No US data transfer, no third-party model provider, no prompt retention. GDPR data processing agreement available."
+title: "Data Sovereignty and Self-Hosted AI Inference -- Marigold"
+description: "Why running inference on your own hardware resolves regulatory, exposure, and training-reappearance risk at the architecture level, not the policy level."
 canonical: "https://marigold.run/data-sovereign.html"
-og_title: "GDPR-Compliant AI Inference API -- Marigold"
-og_description: "Private AI inference in UK and EU AWS regions. No US transfer, no third-party model provider. GDPR DPA available on Pro tier."
-nav_links:
-  - text: Pricing
-    href: /pricing.html
-  - text: Developers
-    href: /developers.html
-  - text: Join waitlist
-    href: "#waitlist"
-    cta: true
+og_title: "Data Sovereignty -- Marigold"
+og_description: "Self-hosted inference removes regulatory, exposure, and training-reappearance risk by construction, not by policy."
 schema: |
   <script type="application/ld+json">
   [
@@ -20,8 +12,8 @@ schema: |
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Marigold",         "item": "https://marigold.run" },
-        { "@type": "ListItem", "position": 2, "name": "Data sovereignty", "item": "https://marigold.run/data-sovereign" }
+        { "@type": "ListItem", "position": 1, "name": "Marigold", "item": "https://marigold.run" },
+        { "@type": "ListItem", "position": 2, "name": "Data sovereignty", "item": "https://marigold.run/data-sovereign.html" }
       ]
     },
     {
@@ -30,23 +22,23 @@ schema: |
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Can I use Marigold for GDPR-regulated data?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Marigold is designed for use with data subject to EU and UK GDPR. Inference runs within your chosen AWS region. No data crosses jurisdictional boundaries as part of inference. A data processing agreement is available to Pro tier accounts. You remain data controller; Marigold acts as processor." }
+          "name": "Does self-hosting remove the need for a data processing agreement?",
+          "acceptedAnswer": { "@type": "Answer", "text": "There is no third-party processor in the inference path, so there is nothing to sign a DPA with for that part of the pipeline. You remain sole controller and sole processor of your own inference. This is an architectural fact, not a contractual guarantee -- it does not by itself make a given use of data lawful, which depends on your legal basis and sector." }
         },
         {
           "@type": "Question",
-          "name": "Does Marigold use US-based sub-processors for inference?",
-          "acceptedAnswer": { "@type": "Answer", "text": "No external model provider is in the inference request path. Models run on private AWS infrastructure in your chosen region. The only external dependency at inference time is AWS itself." }
+          "name": "Does Marigold train on my data?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Marigold runs open-weight models as published -- it does not train, fine-tune, or send inference inputs anywhere for that purpose. There is no feedback loop between what you run and what any model learns next, because there is no vendor on the other end collecting it." }
         },
         {
           "@type": "Question",
-          "name": "Which AWS regions are supported?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Default is London (UK). Ireland is available. Other regions are available on request for Pro tier accounts. Region selection is fixed at account provisioning." }
+          "name": "What data actually leaves my machine when I use Marigold?",
+          "acceptedAnswer": { "@type": "Answer", "text": "None, once set up. Models are downloaded once to local disk. After that, inference runs entirely on your own hardware and the stack can be disconnected from the network entirely -- see the setup tutorial for the exact environment variables involved." }
         },
         {
           "@type": "Question",
-          "name": "Is Marigold suitable for processing sensitive personal data?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The architecture supports it: no cross-border transfer, no third-party model provider, no prompt retention. Whether a specific processing activity is lawful depends on your legal basis, sector, and the nature of the data. Marigold does not provide legal advice. Pro tier accounts can discuss specific use cases and obtain a DPA before processing begins." }
+          "name": "Is self-hosting alone enough to be GDPR compliant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It resolves the cross-border transfer and third-party processor questions, which are usually the hardest part. It does not by itself make every use of personal data lawful -- that still depends on your legal basis, retention practice, and sector rules. Marigold does not provide legal advice." }
         }
       ]
     }
@@ -59,16 +51,17 @@ schema: |
 <section class="hero">
   <div class="wrap">
     <p class="hero-eyebrow">Data sovereignty</p>
-    <h1 class="slogan">Your data stays in your jurisdiction.</h1>
-    <p class="hero-tagline">Inference in London (UK) by default. No US transfer. No third-party model provider in the request path.</p>
+    <h1 class="slogan">Your data never leaves your machine.</h1>
+    <p class="hero-tagline">Not a policy commitment. An architectural fact.</p>
     <p class="hero-sub">
-      Marigold runs open-weight models on private AWS infrastructure in your
-      chosen region. No request reaches OpenAI, Anthropic, Google, or any other
-      external provider. GDPR data processing agreements are available on the Pro tier.
+      Marigold runs open-weight models on your own hardware. There is no
+      vendor in the inference path to send data to, misconfigure a policy
+      around, or have a breach on your behalf. Once set up, it runs
+      airgapped -- inference makes no external request at all.
     </p>
     <div class="hero-actions">
-      <a href="#waitlist" class="btn-primary">Join the waitlist</a>
-      <a href="/pricing.html" class="btn-secondary">View pricing</a>
+      <a href="#risk" class="btn-primary">The case for it</a>
+      <a href="/tutorials/setup.html" class="btn-secondary">Setup guide</a>
     </div>
   </div>
 </section>
@@ -76,58 +69,43 @@ schema: |
 <section class="statement">
   <div class="wrap">
     <p>
-      Most AI API products route your prompts to a US-based model provider.
-      <strong>Marigold runs the model on private infrastructure in your chosen AWS region.</strong>
-      There is no external inference dependency.
+      Sending data to a commercial AI API is, structurally, the same
+      decision as sending it to any third-party processor.
+      <strong>Self-hosting removes that decision rather than managing it.</strong>
     </p>
   </div>
 </section>
 
-<section class="pillars" id="architecture">
+<section class="pillars" id="risk">
   <div class="wrap">
-    <h2 class="section-label">Architecture</h2>
+    <h2 class="section-label">Three kinds of risk, one architectural fix</h2>
     <div class="pillar-grid">
       <div class="pillar">
         <p class="pillar-num">01</p>
-        <h3>Region selection</h3>
-        <p>Default is London (UK). Ireland is also available.
-           Inference, storage, and queuing all run within the selected region.
-           Additional regions are available on the Pro tier.</p>
+        <h3>Regulatory risk</h3>
+        <p>NHS data frameworks, FCA conduct rules, GDPR restrictions on
+        international transfer, legal professional privilege -- binary,
+        externally imposed constraints. If your data can't leave the
+        building, running the model inside the building is the only
+        architecture that satisfies the rule outright.</p>
       </div>
       <div class="pillar">
         <p class="pillar-num">02</p>
-        <h3>No third-party model provider</h3>
-        <p>Inference inputs are not forwarded to OpenAI, Anthropic, Google,
-           or any other external provider. The model runs on private AWS
-           infrastructure from weights held in your region.</p>
+        <h3>Exposure risk</h3>
+        <p>Not everything sensitive is regulated -- competitive intelligence,
+        unannounced product work, client relationships. A commercial
+        provider's breach becomes your breach the moment their processor
+        held your data. With nothing sent externally, there's no third
+        party left to have the breach.</p>
       </div>
       <div class="pillar">
         <p class="pillar-num">03</p>
-        <h3>No prompt retention</h3>
-        <p>Inference requests are not stored beyond the duration of the job.
-           Outputs are held briefly for retrieval and then deleted on schedule.</p>
-      </div>
-    </div>
-    <div class="pillar-grid" style="margin-top:1px;">
-      <div class="pillar">
-        <p class="pillar-num">04</p>
-        <h3>Open-weight models</h3>
-        <p>Models run from weights held on private AWS infrastructure.
-           No model provider receives inference traffic. See the
-           <a href="/open-weights.html">full registry</a> for available models.</p>
-      </div>
-      <div class="pillar">
-        <p class="pillar-num">05</p>
-        <h3>DPA available</h3>
-        <p>Pro tier accounts can obtain a GDPR-compliant data processing
-           agreement. Marigold acts as processor; your organisation retains
-           controller status.</p>
-      </div>
-      <div class="pillar">
-        <p class="pillar-num">06</p>
-        <h3>Audit trail</h3>
-        <p>Every inference job records status and timing within your region.
-           Execution history is queryable. No telemetry leaves the deployment.</p>
+        <h3>Training reappearance risk</h3>
+        <p>Commercial providers train on submitted data, and demonstrated
+        cases exist of training data reappearing in outputs. Open-weight
+        models are fixed and published before you run them -- there is no
+        feedback loop, because there is no vendor collecting anything
+        to feed back.</p>
       </div>
     </div>
   </div>
@@ -135,52 +113,44 @@ schema: |
 
 <section id="compare">
   <div class="wrap">
-    <h2 class="section-label">Data flow comparison</h2>
-
+    <h2 class="section-label">What actually leaves the building</h2>
     <table class="compare-table">
       <thead>
         <tr>
           <th>Criterion</th>
-          <th class="col-marigold">Marigold</th>
-          <th>OpenAI API</th>
-          <th>Anthropic API</th>
+          <th class="col-marigold">Self-hosted (Marigold)</th>
+          <th>Commercial AI API</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>Inference region</td>
-          <td class="col-marigold">UK / EU (your choice)</td>
-          <td>US (OpenAI)</td>
-          <td>US / EU (Anthropic)</td>
+          <td>Inference location</td>
+          <td class="col-marigold">Your own hardware</td>
+          <td>Provider's infrastructure</td>
         </tr>
         <tr>
-          <td>Prompt sent to third party</td>
-          <td class="col-marigold val-yes">Never</td>
-          <td class="val-no">Always</td>
+          <td>Prompt sent to a third party</td>
+          <td class="col-marigold val-yes">Never -- none in the path</td>
           <td class="val-no">Always</td>
         </tr>
         <tr>
-          <td>Training on prompts</td>
-          <td class="col-marigold val-yes">Never</td>
-          <td class="val-no">Opt-out required</td>
-          <td class="val-yes">No (by default)</td>
+          <td>Training on your inputs</td>
+          <td class="col-marigold val-yes">Never -- fixed published weights</td>
+          <td class="val-no">Varies, opt-out often required</td>
         </tr>
         <tr>
-          <td>Data processing agreement</td>
-          <td class="col-marigold val-yes">Available (Pro)</td>
-          <td class="val-yes">Available</td>
-          <td class="val-yes">Available</td>
+          <td>Third-party data processing agreement</td>
+          <td class="col-marigold">Not applicable -- no processor exists</td>
+          <td>Available, still a third party</td>
         </tr>
         <tr>
-          <td>You control deployment region</td>
+          <td>Works fully offline after setup</td>
           <td class="col-marigold val-yes">Yes</td>
-          <td class="val-no">No</td>
           <td class="val-no">No</td>
         </tr>
         <tr>
           <td>Open-weight models</td>
           <td class="col-marigold val-yes">Yes</td>
-          <td class="val-no">No</td>
           <td class="val-no">No</td>
         </tr>
       </tbody>
@@ -194,41 +164,47 @@ schema: |
     <div class="faq-list">
 
       <div class="faq-item">
-        <p class="faq-q">Can I use Marigold for GDPR-regulated data?</p>
+        <p class="faq-q">Does self-hosting remove the need for a data processing agreement?</p>
         <p class="faq-a">
-          Marigold is designed for use with data subject to EU and UK GDPR. Inference
-          runs within your chosen AWS region. No data crosses jurisdictional boundaries
-          as part of inference. A data processing agreement is available to Pro tier
-          accounts. You remain data controller; Marigold acts as processor.
+          There's no third-party processor in the inference path, so there's
+          nothing to sign a DPA with for that part of the pipeline. You remain
+          sole controller and sole processor of your own inference. That's an
+          architectural fact, not a legal guarantee -- it doesn't by itself
+          make a given use of data lawful, which still depends on your legal
+          basis and sector.
         </p>
       </div>
 
       <div class="faq-item">
-        <p class="faq-q">Does Marigold use US-based sub-processors for inference?</p>
+        <p class="faq-q">Does Marigold train on my data?</p>
         <p class="faq-a">
-          No external model provider is in the inference request path. Models run on
-          private AWS infrastructure in your chosen region. The only external dependency
-          at inference time is AWS itself.
+          No. Marigold runs open-weight models as published -- it doesn't
+          train, fine-tune, or send inference inputs anywhere for that
+          purpose. There's no feedback loop between what you run and what
+          any model learns next, because there's no vendor on the other end
+          collecting it.
         </p>
       </div>
 
       <div class="faq-item">
-        <p class="faq-q">Is Marigold suitable for processing sensitive personal data?</p>
+        <p class="faq-q">What data actually leaves my machine when I use Marigold?</p>
         <p class="faq-a">
-          The architecture supports it: no cross-border transfer, no third-party model
-          provider, no prompt retention. Whether a specific processing activity is lawful
-          depends on your legal basis, sector, and the nature of the data. Marigold does
-          not provide legal advice. Pro tier accounts can discuss specific use cases and
-          obtain a DPA before processing begins.
+          None, once set up. Models download once to local disk. After that,
+          inference runs entirely on your own hardware and the stack can be
+          disconnected from the network entirely -- see the
+          <a href="/tutorials/setup.html">setup tutorial</a> for the exact
+          environment variables involved.
         </p>
       </div>
 
       <div class="faq-item">
-        <p class="faq-q">Which AWS regions are supported?</p>
+        <p class="faq-q">Is self-hosting alone enough to be GDPR compliant?</p>
         <p class="faq-a">
-          Default is London (UK). Ireland is available. Other regions including
-          Sydney and Canada are available on request for Pro tier accounts.
-          Region selection is fixed at account provisioning.
+          It resolves the cross-border transfer and third-party processor
+          questions, which are usually the hardest part. It doesn't by
+          itself make every use of personal data lawful -- that still
+          depends on your legal basis, retention practice, and sector rules.
+          Marigold does not provide legal advice.
         </p>
       </div>
 
@@ -236,11 +212,25 @@ schema: |
   </div>
 </section>
 
-<section class="tagline-break" id="waitlist">
+<section class="statement">
   <div class="wrap">
-    <h2 class="slogan">Inference that does not leave your region.</h2>
-    <p>Leave your email and we will reach out when access opens. Include any specific compliance requirements and we will address them before onboarding.</p>
-    {% include waitlist_form.html source="data-sovereign" %}
+    <p style="font-size:1rem;">
+      For a fuller treatment of these three risk categories in general --
+      not specific to Marigold -- Bay Information Systems has written on it
+      at greater length:
+      <a href="https://www.bayis.co.uk/library/65-why-private-inference.html">Why Private Inference?</a>
+    </p>
+  </div>
+</section>
+
+<section class="tagline-break">
+  <div class="wrap">
+    <h2 class="slogan">Nothing to send. Nothing to leak.</h2>
+    <p>Open source. Clone it, run it on your own hardware.</p>
+    <div class="hero-actions">
+      <a href="https://github.com/bayinfosys/marigold" class="btn-primary">View on GitHub</a>
+      <a href="/tutorials/setup.html" class="btn-secondary">Read the setup guide</a>
+    </div>
   </div>
 </section>
 

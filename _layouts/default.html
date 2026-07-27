@@ -33,21 +33,6 @@
 
 {% include footer.html %}
 
-<script>
-function submitWaitlist(source) {
-  var email = document.getElementById('wl-' + source).value;
-  var note  = document.getElementById('wl-note-' + source);
-  if (!email || email.indexOf('@') < 0) return;
-  fetch('{{ site.waitlist_api_base }}/users/waitlist', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ project: "marigold", email: email, source: source })
-  }).then(function(r) {
-    if (r.ok) note.style.display = 'block';
-  }).catch(function() { note.style.display = 'block'; });
-}
-</script>
-
 <script src="https://www.dev.clientlog.bayis.co.uk/clientlog.js"></script>
 <script>
   const logger = clientlog.createLogger({
