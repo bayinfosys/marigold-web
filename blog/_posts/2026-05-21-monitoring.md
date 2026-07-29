@@ -6,7 +6,7 @@ date: 2026-05-21
 author: Marigold
 category: Engineering
 reading_time: 7
-canonical: "https://marigold.run/blog/monitoring/"
+canonical: "https://marigold.run/blog/monitoring.html"
 og_title: "Good Practice and Silent Errors in Distributed Inference"
 og_description: "Distributed inference fails quietly. Three practices determine whether those failures are findable."
 schema: |
