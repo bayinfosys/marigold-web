@@ -20,7 +20,7 @@ schema: |
     "dateModified": "2026-05-21",
     "author": { "@type": "Organization", "name": "Marigold" },
     "publisher": { "@type": "Organization", "name": "Marigold", "url": "https://marigold.run" },
-    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://marigold.run/blog/distributed-inference-05-2026/" }
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://marigold.run/blog/monitoring.html" }
   }
   </script>
 ---

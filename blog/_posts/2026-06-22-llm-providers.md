@@ -20,7 +20,7 @@ schema: |
     "dateModified": "2026-06-22",
     "author": { "@type": "Organization", "name": "Marigold" },
     "publisher": { "@type": "Organization", "name": "Marigold", "url": "https://marigold.run" },
-    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://marigold.run/blog/cheap-gpu-serving/" }
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://marigold.run/blog/llm-providers.html" }
   }
   </script>
 ---
