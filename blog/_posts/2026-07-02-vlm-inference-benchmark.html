@@ -165,7 +165,7 @@ schema: |
 <p>One RTX 3060 12 GB, running Marigold's local Docker Compose stack -- Postgres for the queue, a single worker process, no cloud component in the path.
 Each of the four models processed 1,001 COCO val2017 images in sequence, with the prompt "Describe this image." and a 256-token output cap.
 Images were downloaded once before the run and held in memory as base64 data URIs, so no per-request network fetch contributed to timing.
-Every request captures server-side inference time, peak VRAM, and GPU power draw directly from the worker process via <code>nvml</code>, using the same telemetry pipeline as the <a href="/blog/self-hosted-inference-benchmark/">instruct model benchmark</a>.</p>
+Every request captures server-side inference time, peak VRAM, and GPU power draw directly from the worker process via <code>nvml</code>, using the same telemetry pipeline as the <a href="/blog/self-hosted-inference-benchmark.html">instruct model benchmark</a>.</p>
 
 <p>One model was excluded: <code>HuggingFaceTB/SmolVLM2-2.2B-Instruct</code> requires <code>AutoModelForImageTextToText</code> rather than the <code>AutoModelForVision2Seq</code> class the current handler uses. This is a handler limitation, not a model deficiency, and is noted for a future handler revision.</p>
 
