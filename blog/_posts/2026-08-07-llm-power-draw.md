@@ -6,9 +6,10 @@ date: 2026-08-07
 author: Marigold
 category: Engineering
 reading_time: 8
-canonical: "https://marigold.run/blog/llm-power-benchmark.html"
+canonical: "https://marigold.run/blog/llm-power-draw.html"
 og_title: "LLM Power and Memory Telemetry: 57 Models, 21,660 Requests"
 og_description: "Model size predicts memory and load time, but not power draw. A benchmark of 57 open-weight models across 21,660 requests."
+image: "/assets/data/2026-08-07-llm-power-draw-correlations.png"
 schema: |
   <script type="application/ld+json">
   {
@@ -20,7 +21,7 @@ schema: |
     "dateModified": "2026-08-07",
     "author": { "@type": "Organization", "name": "Marigold" },
     "publisher": { "@type": "Organization", "name": "Marigold", "url": "https://marigold.run" },
-    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://marigold.run/blog/llm-power-benchmark.html" }
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://marigold.run/blog/llm-power-draw.html" }
   }
   </script>
 ---

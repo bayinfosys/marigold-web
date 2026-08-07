@@ -14,6 +14,12 @@
   <meta property="og:description" content="{{ page.og_description | default: page.description }}">
   <meta property="og:site_name" content="Marigold">
 
+  {% if page.image %}
+  <meta property="og:image" content="https://marigold.run{{ page.image }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://marigold.run{{ page.image }}">
+  {% endif %}
+
   <title>{{ page.title }}</title>
 
   {% if page.schema %}{{ page.schema }}{% endif %}
