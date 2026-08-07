@@ -113,7 +113,7 @@ CV remains a genuinely useful measure for spotting outliers and flagging telemet
 
 Computed across the twelve usable numeric columns (excluding the constant `cpu_offload_bytes`), successful requests only.
 
-![Correlation matrix of the twelve numeric columns across all successful requests](/assets/data/2026-08-07-llm-power-draw-correlation.png)
+![Correlation matrix of the twelve numeric columns across all successful requests](/assets/data/2026-08-07-llm-power-draw-correlations.png)
 
 **Model size predicts memory and load time almost perfectly, but not power metrics.** `model_size_bytes` correlates at 0.93-1.00 with `vram_usage_bytes`, `vram_usage_bytes_peak`, and `server_load_seconds`, and at only 0.67-0.76 with `power_watts_mean` and `power_watts_peak`.
 
