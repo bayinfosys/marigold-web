@@ -60,7 +60,7 @@ One export quirk: the published CSV is UTF-7 encoded, not UTF-8. Opened with a s
 - Power draw, peak per request: 0W to 232.0W (mean 99.1W, median 84.5W)
 - Peak VRAM: up to 11.7GB
 
-![Distributions of the twelve numeric columns across all successful requests: token counts, timing, VRAM, model size and power draw](assets/data/2026-08-07-llm-power-draw-distributions.png)
+![Distributions of the twelve numeric columns across all successful requests: token counts, timing, VRAM, model size and power draw](/assets/data/2026-08-07-llm-power-draw-distributions.png)
 
 Two shapes stand out. `completion_tokens` is sharply bimodal, most requests cluster near the 256-token default cap, a smaller group sits near 4,000. `power_watts_mean` clusters in a band around 80-90W with a long tail out past 150W, consistent with a mix of small and large models in the same run rather than one typical wattage.
 
@@ -86,7 +86,7 @@ Other models under roughly 1.1% CV: `huggingfacetb/smollm2-135m`, `qwen/qwen3-8b
 
 Excluding that case, the next most volatile cluster is entirely sub-3M-parameter experimental models: `fromziro/syn-2.6m`, `harley-ml/dillionv2-1.3m`, `fromziro/er-tiny-1.3m`, each around 28% CV.
 
-![Power draw consistency leaderboard across all 57 models, ranked by coefficient of variation, lower is more consistent](assets/data/2026-08-07-llm-power-draw-leader-board.png)
+![Power draw consistency leaderboard across all 57 models, ranked by coefficient of variation, lower is more consistent](/assets/data/2026-08-07-llm-power-draw-leader-board.png)
 
 Open question: whether power-draw consistency can be predicted from architecture family or parameter count alone. No working theory yet.
 
@@ -113,7 +113,7 @@ CV remains a genuinely useful measure for spotting outliers and flagging telemet
 
 Computed across the twelve usable numeric columns (excluding the constant `cpu_offload_bytes`), successful requests only.
 
-![Correlation matrix of the twelve numeric columns across all successful requests](assets/data/2026-08-07-llm-power-draw-correlation.png)
+![Correlation matrix of the twelve numeric columns across all successful requests](/assets/data/2026-08-07-llm-power-draw-correlation.png)
 
 **Model size predicts memory and load time almost perfectly, but not power metrics.** `model_size_bytes` correlates at 0.93-1.00 with `vram_usage_bytes`, `vram_usage_bytes_peak`, and `server_load_seconds`, and at only 0.67-0.76 with `power_watts_mean` and `power_watts_peak`.
 
