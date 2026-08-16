@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Examples -- Marigold"
-description: "Runnable example workflows and configurations for Marigold. Coming soon."
+description: "Ready-to-run example applications for Marigold: chat, RAG, benchmarking, and agent setups."
 canonical: "https://marigold.run/examples.html"
 permalink: /examples.html
 ---
@@ -9,11 +9,41 @@ permalink: /examples.html
 <section class="hero hero--compact">
   <div class="wrap">
     <p class="hero-eyebrow">Examples</p>
-    <h1 class="slogan">Check back soon.</h1>
+    <h1 class="slogan">Ready-to-run application packages.</h1>
     <p class="hero-sub">
-      Runnable example workflows and configs are on the way. In the
-      meantime, <a href="/tutorials.html">tutorials</a> walk through a full
-      setup step by step.
+      Each example is a self-contained package -- a model list and a
+      run configuration. Clone the repo, point <code>marigold</code> at
+      a directory by name, and it's running.
+    </p>
+    <pre><code>pip install bayis-marigold
+git clone https://github.com/bayinfosys/marigold-examples
+marigold deployment start marigold-examples/chat</code></pre>
+  </div>
+</section>
+
+<section class="pillars">
+  <div class="wrap">
+    <h2 class="section-label">What's available</h2>
+    <div class="pillar-grid">
+      <div class="pillar">
+        <h3>chat</h3>
+        <p>Private chat via open-webui, backed entirely by self-hosted models.</p>
+      </div>
+      <div class="pillar">
+        <h3>simple-rag</h3>
+        <p>Chat plus retrieval -- document upload and retrieval-augmented answers, with a worked verification example included.</p>
+      </div>
+      <div class="pillar">
+        <h3>quick-platform-test</h3>
+        <p>Smallest example. Exercises the core endpoints against small models -- a fast first run to confirm everything's working.</p>
+      </div>
+      <div class="pillar">
+        <h3>benchmark-llm</h3>
+        <p>Batch prompt benchmarking across a model set.</p>
+      </div>
+    </div>
+    <p class="how-note">
+      <a href="https://github.com/bayinfosys/marigold-examples">Full list on GitHub &rarr;</a>
     </p>
   </div>
 </section>

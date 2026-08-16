@@ -37,6 +37,10 @@ schema: |
       Runs airgapped once set up -- no request ever reaches OpenAI, Anthropic,
       or any other external provider. Open source, free to run.
     </p>
+    <pre><code>pip install bayis-marigold
+git clone https://github.com/bayinfosys/marigold-examples
+marigold deployment start marigold-examples/chat</code></pre>
+
     <div class="hero-actions">
       <a href="#usecases" class="btn-primary">See what it runs</a>
       <a href="https://github.com/bayinfosys/marigold" class="btn-secondary">View on GitHub</a>
@@ -70,10 +74,11 @@ schema: |
       </div>
       <div class="pillar">
         <p class="pillar-num">02</p>
-        <h3>Workflow execution</h3>
-        <p>Declarative YAML pipelines over the model registry. Steps declare
-        typed inputs and outputs; the executor resolves the dependency graph
-        and runs independent steps in parallel. Every step is audited.</p>
+        <h3>Workflow execution <span style="font-size:0.7em;color:var(--ink-mid);">(roadmap)</span></h3>
+        <p>Declarative YAML pipelines over the model registry, planned as
+        the next layer on top of the inference API. Steps will declare
+        typed inputs and outputs; the executor resolves the dependency
+        graph and runs independent steps in parallel.</p>
       </div>
       <div class="pillar">
         <p class="pillar-num">03</p>

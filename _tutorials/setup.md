@@ -1,21 +1,21 @@
 ---
 layout: tutorial
 title: "Setting up Marigold: a self-hosted inference stack in one command"
-description: "Clone, configure, and run Marigold locally with Docker Compose -- API, workers, and Open WebUI, no cloud dependency."
-date: 2026-07-27
+description: "Install, configure, and run Marigold locally -- API, worker, and Open WebUI, no cloud dependency."
+date: 2026-08-16
 category: Engineering
 reading_time: 6
 canonical: "https://marigold.run/tutorials/setup.html"
 og_title: "Setting up Marigold -- self-hosted in one command"
-og_description: "Clone, configure, and run Marigold locally with Docker Compose. No cloud dependency, runs airgapped once set up."
+og_description: "Install, configure, and run Marigold locally. No cloud dependency, runs airgapped once set up."
 schema: |
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "headline": "Setting up Marigold: a self-hosted inference stack in one command",
-    "datePublished": "2026-07-27",
-    "dateModified": "2026-07-27",
+    "datePublished": "2026-08-16",
+    "dateModified": "2026-08-16",
     "author": { "@type": "Organization", "name": "Marigold" },
     "publisher": { "@type": "Organization", "name": "Marigold", "url": "https://marigold.run" },
     "mainEntityOfPage": { "@type": "TechArticle", "@id": "https://marigold.run/tutorials/setup.html" }
@@ -25,210 +25,134 @@ schema: |
 
 Marigold is a self-hosted inference platform: an OpenAI-compatible API, a
 model-serving worker, and a chat interface, all running on your own
-hardware. This tutorial gets you from a fresh clone to a working chat
-session, and covers the conventions you need before customising anything.
+hardware. This tutorial gets you from nothing installed to a working
+chat session, and covers the conventions you need before customising
+anything.
 
 ## Prerequisites
 
 - Docker and Docker Compose
 - NVIDIA Container Toolkit, if you're running a GPU-backed model (the
   worker service requests one by default)
-- A HuggingFace token, only if you plan to use a gated model such as
-  anything under `meta-llama` -- not required for this walkthrough
+- A HuggingFace token, only if you plan to use a gated model -- not
+  required for this walkthrough
 
-## Clone the repository
-
-```bash
-git clone https://github.com/bayinfosys/marigold
-cd marigold
-```
-
-## The three Compose files
-
-Marigold's Docker Compose setup is split across three files:
-
-- `docker-compose.core.yaml` -- the actual services: Postgres, the
-  cache builder, the inference worker, and the API.
-- `docker-compose.webui.yaml` -- Open WebUI, as an example chat
-  frontend for the API.
-- `docker-compose.yaml` -- includes both of the above. This is the
-  file Compose picks up by default, so `docker compose up` on its own
-  gives you the full stack.
-
-You don't need the other two files directly for normal use; they exist
-so the core services can run alone if you want a leaner stack, or a
-different frontend in place of Open WebUI.
-
-## `MARIGOLD_DIR`: one directory, nowhere else
-
-Every piece of state a Marigold setup has -- which models to load, local
-configuration, and everything the running containers produce -- lives
-under one directory, pointed at by the `MARIGOLD_DIR` environment
-variable. Nothing is stored anywhere else: no Docker named volumes, no
-database outside this directory, no state held only inside a container.
-If it matters, it's a file under `MARIGOLD_DIR`.
-
-### What you provide
-
-Two files, written by you before the first run:
-
-```
-your-setup/
-  models.yaml     -- which models to load
-  local.env       -- environment overrides for this setup
-```
-
-### What gets created
-
-Everything else under `MARIGOLD_DIR` is produced by running the stack,
-not written by hand:
-
-```
-your-setup/
-  data/
-    models/       -- downloaded model weights
-    tmp/          -- offload storage used during inference
-    outputs/      -- binary outputs (images, audio, etc.)
-    webui/        -- Open WebUI's own state: chat history, uploaded
-                     documents, and its internal vector store used for
-                     document retrieval
-```
-
-`data/` doesn't need to exist beforehand -- Docker creates it as empty
-directories the first time you run `docker compose up` against a new
-`MARIGOLD_DIR`.
-
-**`data/` is the entire state of your project.** Deleting it deletes
-everything -- downloaded models, chat history, uploaded documents, all
-of it -- and running `docker compose up` again rebuilds from nothing
-but `models.yaml` and `local.env`. Nothing else to clean up anywhere: no
-named volume to separately remove, no database sitting outside this
-folder, no cache held by a container that survives the directory being
-deleted.
-
-## Writing `models.yaml`
-
-This file lists which models get downloaded and served. Keep it small
-and specific to what you're actually going to use -- model weights can
-run into gigabytes each, so there's no reason to load more than you need
-for a given setup.
-
-A minimal example, one small instruct model and one small embedding
-model:
-
-```yaml
-models:
-
-  - name: qwen/qwen2.5-1.5b-instruct
-    provider: huggingface
-    type: instruct
-    input: chat
-    output: chat
-    timeout: 600
-    gpu_tier: sm
-    gpu_units: 1
-    memory_size: 2048
-    extra_env:
-      LOAD_IN_4BIT: "1"
-    description: >
-      Small instruction model, chosen to keep the download and VRAM
-      footprint minimal.
-
-  - name: sentence-transformers/all-minilm-l6-v2
-    provider: huggingface
-    type: text-embedding
-    input: text
-    output: vector/384
-    gpu_tier: none
-    gpu_units: 0
-    parameters:
-      vector_size: 384
-    description: >
-      Small, fast general-purpose embedding model.
-```
-
-Neither of these is gated, so no HuggingFace token is required for this
-particular pair.
-
-## Writing `local.env`
-
-`local.env` tells Compose where your `MARIGOLD_DIR` is and which
-catalogue file inside it to load:
+## Install
 
 ```bash
-# your-setup/local.env
-# Used with: docker compose --env-file your-setup/local.env up
-
-MARIGOLD_DIR=./your-setup
-MODELS_CATALOGUE=/app/marigold/models.yaml
-
-# Only needed if models.yaml includes a gated model.
-HF_TOKEN=
+pip install bayis-marigold
 ```
 
-Get this right first time: `MARIGOLD_DIR` must start with `./`, `../`,
-or `/`. Docker Compose treats a bare path like `your-setup` (no leading
-`./`) as the name of a named volume rather than a directory on disk,
-which silently gives you an empty, disconnected volume instead of your
-actual directory. If your models never seem to load and nothing looks
-obviously wrong, check this first.
+This installs the `marigold` command. It doesn't install the model
+code itself -- that runs in containers, pulled automatically the first
+time you start something.
 
-`MODELS_CATALOGUE` is a path *inside the container*, always
-`/app/marigold/...`, since that's where `MARIGOLD_DIR` gets mounted --
-not the path on your own machine.
+## Get the examples
 
-## Running it
+Application packages -- pre-written model lists and run configurations
+-- live in a separate repository, so they can be updated and added to
+independently of the library itself:
 
 ```bash
-docker compose --env-file your-setup/local.env up
+git clone https://github.com/bayinfosys/marigold-examples
 ```
 
-The first run downloads the models listed in `models.yaml` -- this can
-take a while depending on model size and connection speed, and it's the
-only point in this whole process where an internet connection is
-actually required. The `cache-init` service runs to completion before
-the worker and API start; that's expected, they wait on it deliberately.
+Each directory under `marigold-examples` is a self-contained package:
+a `models.yaml` declaring which models to load, a `marigold.toml`
+declaring how to run it.
+
+## Start one
+
+```bash
+marigold deployment start marigold-examples/chat
+```
+
+This brings up the full stack for that package: Postgres, a one-shot
+`cache-init` service that downloads whatever `chat`'s `models.yaml`
+declares, the worker, the API, and (since `chat` asks for it) Open
+WebUI. `cache-init` completes before the worker and API start --
+expected, they wait on it deliberately. The first run downloads the
+model; this is the only point in the whole process requiring an
+internet connection.
 
 ## Confirming it worked
 
 Two checks, in order:
 
-1. **The API.** Visit `http://localhost:8000/docs` for the interactive
-   API documentation, and check `GET /v1/models` lists the models from
-   your `models.yaml`. If a model is missing here, nothing past this
-   point will work correctly -- catch it here first.
+1. **The API.** Visit `http://localhost:8000/docs` and check
+   `GET /v1/models` lists the model from `chat`'s `models.yaml`. If
+   it's missing here, nothing past this point will work correctly --
+   catch it here first.
+2. **Open WebUI.** Visit `http://localhost:3000`. On a fresh cache,
+   this should show an empty chat history. Send a message and confirm
+   you get a response.
 
-2. **Open WebUI.** Visit `http://localhost:3000`. On a genuinely fresh
-   `MARIGOLD_DIR`, this should show an empty chat history and no
-   previous conversations -- if you see chats you don't recognise,
-   `MARIGOLD_DIR` is pointing somewhere unexpected (see the leading-`./`
-   note above), not at your new directory.
-
-Send a message and confirm you get a response from the instruct model.
-
-## Starting over
-
-Because everything lives under `MARIGOLD_DIR`, resetting a setup
-completely -- models, chat history, everything -- is one command:
+## The rest of the commands
 
 ```bash
-rm -rf your-setup/data
+marigold deployment stop marigold-examples/chat     # tear down
+marigold deployment logs marigold-examples/chat     # tail logs
+marigold deployment status marigold-examples/chat   # container state
+marigold cache inspect                               # what's cached, where, disk usage
 ```
 
-The next `docker compose up` recreates it from scratch.
+**Only one deployment runs at a time.** Starting a different package
+reconfigures the same deployment in place, rather than running two
+stacks side by side -- Postgres and the model cache persist across the
+switch. This is deliberate: the model cache is shared across every
+package on your machine, so if two packages both use the same model,
+switching between them doesn't mean downloading it twice.
+
+## Where things live
+
+Two things Marigold cares about, in two different places, for two
+different reasons:
+
+- **The model cache** -- downloaded weights, offload storage, binary
+  outputs. Host-level: one location, shared by every package you run,
+  independent of which one is currently active. Defaults to
+  `~/.marigold/cache`.
+- **Which models a package wants** -- that package's own `models.yaml`,
+  small and git-trackable, living in `marigold-examples` (or wherever
+  else you keep your own packages).
+
+Deleting the model cache resets it completely -- the next
+`marigold deployment start` rebuilds it from whatever `models.yaml`
+declares.
+
+## Configuring it
+
+An optional `config.toml` -- in your current directory,
+`~/.marigold/config.toml`, or wherever `$MARIGOLD_CONFIG` points --
+overrides the defaults. Nothing here is required to get started; a
+bare `pip install` with no config file works out of the box.
+
+```toml
+[cache]
+dir = "/data/marigold"
+
+[database]
+url = "postgresql://..."
+
+[deployment]
+tag = "v0.6.7"    # pin a specific released version
+```
+
+Cache location and database connection are host-level settings, not
+something an individual package's `marigold.toml` should need to know
+about.
 
 ## Running air-gapped
 
-Once `data/models` has been populated, every model your setup uses is
-sitting on local disk -- inference itself makes no external request.
-The compose files include the environment variables needed to stop
-Open WebUI and the underlying HuggingFace libraries attempting any
-network call once the models are cached, so after the first successful
-run you can disconnect entirely and Marigold keeps working.
+Once a model's been downloaded, it's sitting on local disk --
+inference itself makes no external request. The compose files set the
+environment variables needed to stop the worker, API, and Open WebUI
+attempting any network call once models are cached, so after the first
+successful run you can disconnect entirely and Marigold keeps working.
 
 ## What's next
 
 This setup is the foundation the other tutorials build on: local
-document search (RAG), running agents against Marigold with LangGraph,
-and connecting IDE tools like Continue.dev. Each of those assumes a
-working `MARIGOLD_DIR` from this guide -- they won't repeat this part.
+document search (RAG), and adding a new model to an existing package.
+Each assumes a working deployment from this guide -- they won't repeat
+this part.
