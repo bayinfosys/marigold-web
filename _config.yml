@@ -17,6 +17,10 @@ collections:
     output: true
     permalink: /tutorials/:path.html
 
+  examples:
+    output: true
+    permalink: /examples/:path.html
+
 defaults:
   - scope:
       path: ""
@@ -26,6 +30,11 @@ defaults:
   - scope:
       path: ""
       type: tutorials
+    values:
+      layout: tutorial
+  - scope:
+      path: ""
+      type: examples
     values:
       layout: tutorial
 

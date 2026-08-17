@@ -6,6 +6,8 @@ canonical: "https://marigold.run/examples.html"
 permalink: /examples.html
 ---
 
+<main>
+
 <section class="hero hero--compact">
   <div class="wrap">
     <p class="hero-eyebrow">Examples</p>
@@ -21,29 +23,29 @@ marigold deployment start marigold-examples/chat</code></pre>
   </div>
 </section>
 
-<section class="pillars">
+<section class="usecases">
   <div class="wrap">
-    <h2 class="section-label">What's available</h2>
-    <div class="pillar-grid">
-      <div class="pillar">
-        <h3>chat</h3>
-        <p>Private chat via open-webui, backed entirely by self-hosted models.</p>
-      </div>
-      <div class="pillar">
-        <h3>simple-rag</h3>
-        <p>Chat plus retrieval -- document upload and retrieval-augmented answers, with a worked verification example included.</p>
-      </div>
-      <div class="pillar">
-        <h3>quick-platform-test</h3>
-        <p>Smallest example. Exercises the core endpoints against small models -- a fast first run to confirm everything's working.</p>
-      </div>
-      <div class="pillar">
-        <h3>benchmark-llm</h3>
-        <p>Batch prompt benchmarking across a model set.</p>
-      </div>
+    <div class="usecase-grid">
+      {% for example in site.examples %}
+      <a class="usecase-card" href="{{ example.url }}">
+        {% if example.category %}<p class="hero-eyebrow">{{ example.category }}</p>{% endif %}
+        <h4>{{ example.title }}</h4>
+        {% if example.description %}<p>{{ example.description }}</p>{% endif %}
+      </a>
+      {% endfor %}
     </div>
+    {% if site.examples.size == 0 %}
+    <p class="faq-a">No examples yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="how-note">
+  <div class="wrap">
     <p class="how-note">
-      <a href="https://github.com/bayinfosys/marigold-examples">Full list on GitHub &rarr;</a>
+      <a href="https://github.com/bayinfosys/marigold-examples">Full source on GitHub &rarr;</a>
     </p>
   </div>
 </section>
+
+</main>
