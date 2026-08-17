@@ -27,24 +27,30 @@ schema: |
 <script async src="https://startupbar.co/widget/loader.js" data-startup-id="da4fb3c9-bedb-4f4e-b7b8-695c4270dbd4"></script>
 
 <section class="hero">
-  <div class="wrap">
-    <p class="hero-eyebrow">Self-hosted inference. Typed workflows. Evals.</p>
-    <h1 class="slogan">Self-hosted open-weight inference, done properly.</h1>
-    <p class="hero-tagline">Define your task. Build your pipeline. Measure and improve.</p>
-    <p class="hero-sub">
-      Open-weight models on your own hardware. A typed async inference API,
-      declarative YAML workflows, and an eval surface that sharpens with use.
-      Runs airgapped once set up -- no request ever reaches OpenAI, Anthropic,
-      or any other external provider. Open source, free to run.
+   <div class="wrap">
+    <p class="hero-eyebrow">
+      <img src="https://img.shields.io/pypi/v/bayis-marigold" alt="PyPI version" style="vertical-align:middle;">
+      <img src="https://img.shields.io/github/v/tag/bayinfosys/marigold" alt="Latest tag" style="vertical-align:middle;">
+      &nbsp;Open source &middot; Python &middot; Apache-licensed HuggingFace models
     </p>
-    <pre><code>pip install bayis-marigold
-git clone https://github.com/bayinfosys/marigold-examples
-marigold deployment start marigold-examples/chat</code></pre>
-    <div class="hero-actions">
-      <a href="https://github.com/bayinfosys/marigold" class="btn-secondary">View on GitHub</a>
-    </div>
-  </div>
-</section>
+    <h1 class="slogan">A self-hosted inference API for open-weight models.</h1>
+    <p class="hero-tagline">Serve HuggingFace models over a typed HTTP API, on your own hardware.</p>
+    <p class="hero-sub">
+      Marigold runs text, image, and audio models locally behind an
+      OpenAI-compatible API -- chat, embeddings, image generation, and more,
+      served from Docker Compose. No request ever reaches OpenAI, Anthropic,
+      or any other external provider; runs fully airgapped once models are
+      cached.
+    </p>
+     <pre><code>pip install bayis-marigold
+ git clone https://github.com/bayinfosys/marigold-examples
+ marigold deployment start marigold-examples/chat</code></pre>
+     <div class="hero-actions">
+       <a href="#usecases" class="btn-primary">See what it runs</a>
+       <a href="https://github.com/bayinfosys/marigold" class="btn-secondary">View on GitHub</a>
+     </div>
+   </div>
+ </section>
 
 <section class="statement">
   <div class="wrap">
