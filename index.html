@@ -67,29 +67,28 @@ marigold deployment start marigold-examples/chat</code></pre>
 
 <section class="pillars">
   <div class="wrap">
-    <h2 class="section-label">Hosting. Workflows. Evals.</h2>
+    <h2 class="section-label">Applications, not just endpoints</h2>
     <div class="pillar-grid">
       <div class="pillar">
         <p class="pillar-num">01</p>
-        <h3>Private Inference API</h3>
-        <p>A unified async API over self-hosted HuggingFace models: text,
-        image, audio, cross-modal. One container image, one weight cache,
-        per-model isolation.</p>
+        <h3>Models are the stable layer</h3>
+        <p>One shared weight cache, independent of which application is
+        running. Downloaded once, reused by everything that needs it.</p>
       </div>
       <div class="pillar">
         <p class="pillar-num">02</p>
-        <h3>Workflow execution <span style="font-size:0.7em;color:var(--ink-mid);">(roadmap)</span></h3>
-        <p>Declarative YAML pipelines over the model registry, planned as
-        the next layer on top of the inference API. Steps will declare
-        typed inputs and outputs; the executor resolves the dependency
-        graph and runs independent steps in parallel.</p>
+        <h3>Applications are the thin layer</h3>
+        <p>A models.yaml, a marigold.toml, and application code -- a
+        package. Marigold runs it; it never runs the package's own
+        code, by design.</p>
       </div>
       <div class="pillar">
         <p class="pillar-num">03</p>
-        <h3>Evals</h3>
-        <p>Run any model or pipeline against a labelled dataset, scored by
-        the same handler registry. Build eval libraries from production
-        runs and corrections. The spec sharpens with use.</p>
+        <h3>Why this split matters</h3>
+        <p>We've written about this at length: models as a fat protocol,
+        applications as thin clients on top -- the same shape that made
+        early internet protocols durable.
+        <a href="https://www.bayis.co.uk/library/45-fat-protocols-for-ai.html">Read the essay &rarr;</a></p>
       </div>
     </div>
   </div>
