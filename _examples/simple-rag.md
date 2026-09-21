@@ -14,15 +14,25 @@ two together and, more usefully, proves the wiring is actually correct:
 three invented documents, each with facts that exist nowhere else, and
 a set of questions only answerable if retrieval genuinely happened.
 
+
 ## Run it
 
+This assumes the [setup guide](/tutorials/setup.html) is done.
+
 ```bash
-pip install bayis-marigold
-git clone https://github.com/bayinfosys/marigold-examples
-marigold deployment start marigold-examples/simple-rag
+marigold package create marigold-examples/simple-rag -o /tmp
+marigold package install /tmp/simple-rag-<version>.tar.gz
+marigold cache populate simple-rag
+marigold application start simple-rag
 ```
 
 Open `http://localhost:3000`.
+
+The package lists `webui` in its `compose_files`, so starting it adds
+Open WebUI to the platform, as a client of the API. The package's
+application checks that both models are in the catalogue and exits;
+`marigold application status simple-rag` shows exit code 0 when they
+are.
 
 ## What's in it
 
@@ -97,3 +107,14 @@ benchmark.
 Marigold hosts no vector database. Retrieval, chunking, and storage
 here are all Open WebUI's own local ChromaDB instance. Marigold
 supplies embedding vectors on request and nothing else in this path.
+
+## Stop
+
+```bash
+marigold application stop simple-rag    # the application container
+marigold platform stop --applications   # everything, Open WebUI included
+```
+
+Open WebUI runs with the platform, so stopping the application leaves
+it running. Its documents, vector store and chat history persist in
+`data/webui` under the cache directory.

@@ -8,23 +8,41 @@ og_description: "Private chat, self-hosted, backed by an open-weight instruct mo
 category: Examples
 ---
 
-Private chat via Open WebUI, backed by a self-hosted instruct model.
+Private chat through Open WebUI, backed by a self-hosted instruct
+model. This assumes the [setup guide](/tutorials/setup.html) is done.
 
 ## Run
 
 ```bash
-marigold deployment start marigold-examples/chat
+marigold package create marigold-examples/chat -o /tmp
+marigold package install /tmp/chat-<version>.tar.gz
+marigold cache populate chat
+marigold application start chat
 ```
 
-Open `http://localhost:3000`. Chat with the model using
+Open `http://localhost:3000` and chat with the model using
 [Open WebUI](https://docs.openwebui.com/).
+
+The package lists `webui` in its `compose_files`, so starting it adds
+Open WebUI to the platform, as a client of the API. The package's
+application checks that its model is in the catalogue and exits;
+`marigold application status chat` shows exit code 0 when it is.
+
+Open WebUI lists every model in the catalogue, including models cached
+for other packages.
 
 ## Models
 
 - `qwen/qwen3-8b` -- instruct
 
+To change it, see [adding a new model](/tutorials/adding-a-model.html).
+
 ## Stop
 
 ```bash
-marigold deployment stop marigold-examples/chat
+marigold application stop chat          # the application container
+marigold platform stop --applications   # everything, Open WebUI included
 ```
+
+Open WebUI runs with the platform, so stopping the application leaves
+it running.

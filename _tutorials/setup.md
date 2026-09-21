@@ -1,21 +1,21 @@
 ---
 layout: tutorial
-title: "Setting up Marigold: a self-hosted inference stack in one command"
-description: "Install, configure, and run Marigold locally -- API, worker, and Open WebUI, no cloud dependency."
+title: "Setting up Marigold: platform, package and application"
+description: "Install Marigold, start the shared platform, install a package, cache its models and run its application, on your own hardware."
 date: 2026-08-16
 category: Engineering
-reading_time: 6
+reading_time: 7
 canonical: "https://marigold.run/tutorials/setup.html"
-og_title: "Setting up Marigold -- self-hosted in one command"
-og_description: "Install, configure, and run Marigold locally. No cloud dependency, runs airgapped once set up."
+og_title: "Setting up Marigold: platform, package and application"
+og_description: "Install Marigold and run a first application against a shared, self-hosted platform. Runs air-gapped once models are cached."
 schema: |
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "Setting up Marigold: a self-hosted inference stack in one command",
+    "headline": "Setting up Marigold: platform, package and application",
     "datePublished": "2026-08-16",
-    "dateModified": "2026-08-16",
+    "dateModified": "2026-09-21",
     "author": { "@type": "Organization", "name": "Marigold" },
     "publisher": { "@type": "Organization", "name": "Marigold", "url": "https://marigold.run" },
     "mainEntityOfPage": { "@type": "TechArticle", "@id": "https://marigold.run/tutorials/setup.html" }
@@ -23,136 +23,178 @@ schema: |
   </script>
 ---
 
-Marigold is a self-hosted inference platform: an OpenAI-compatible API, a
-model-serving worker, and a chat interface, all running on your own
-hardware. This tutorial gets you from nothing installed to a working
-chat session, and covers the conventions you need before customising
-anything.
+Marigold is a self-hosted inference platform: a shared model cache, an
+API, a worker, and applications that run against them, all on your own
+hardware. This tutorial goes from nothing installed to a running
+application, and covers the conventions to understand before writing
+your own.
+
+A running system has three layers. The platform is shared by
+everything on the host. A package is a list of required models plus
+application code. An application is a package's code running in its
+own container, reaching the platform through the API.
 
 ## Prerequisites
 
 - Docker and Docker Compose
-- NVIDIA Container Toolkit, if you're running a GPU-backed model (the
-  worker service requests one by default)
-- A HuggingFace token, only if you plan to use a gated model -- not
-  required for this walkthrough
+- NVIDIA Container Toolkit, for a GPU worker
+- Python 3.12
+- A HuggingFace token, for gated models such as anything under
+  `meta-llama`. This walkthrough needs none.
 
-## Install
+## Install the CLI
 
 ```bash
 pip install bayis-marigold
+marigold --version
 ```
 
-This installs the `marigold` command. It doesn't install the model
-code itself -- that runs in containers, pulled automatically the first
-time you start something.
+This installs the `marigold` command. Model code runs in containers,
+pulled the first time they start.
 
-## Get the examples
+## One directory holds everything
 
-Application packages -- pre-written model lists and run configurations
--- live in a separate repository, so they can be updated and added to
-independently of the library itself:
+Every piece of state Marigold keeps -- model weights, the database,
+installed packages, application outputs -- lives under one cache
+directory: no named volumes, no external database, no state held only
+inside a container.
+
+Set its location in a system config:
+
+```toml
+# ~/.marigold/config.toml
+[platform]
+compose_files = ["core", "cpu"]     # add "gpu" for an NVIDIA worker
+
+[cache]
+dir = "/data/marigold"              # default: ~/.marigold/cache
+```
+
+The CLI reads `$MARIGOLD_CONFIG` if set, then `config.toml` in the
+current directory, then `~/.marigold/config.toml`. Keep one config in
+your home directory. A `config.toml` in a working directory takes
+precedence whenever you are in it, which changes the cache and platform
+the CLI addresses; scripts set `MARIGOLD_CONFIG`.
+
+`marigold config path` prints the config in use, and `marigold config
+show` prints every resolved value with the layer it came from.
+
+Create the layout:
+
+```bash
+marigold cache init
+```
+
+For a cache directory under a system path such as `/data`, `cache
+init` prints the two commands to create it with your ownership. The CLI
+writes installed packages there as you; containers write model weights
+and database files as root.
+
+```
+/data/marigold/data/
+  models/          downloaded weights, shared by every package
+  postgres/        the platform database
+  packages/        package archives and the installed index
+  applications/    extracted packages, and each application's outputs
+  outputs/         binary inference outputs
+  tmp/             worker offload space
+```
+
+## Start the platform
+
+```bash
+marigold platform start
+marigold platform status
+```
+
+This starts Postgres, the API, the worker and the cache container, as
+compose project `marigold`. The API answers at
+`http://localhost:8000/docs`. The catalogue is empty: nothing has been
+downloaded yet.
+
+## Install a package
 
 ```bash
 git clone https://github.com/bayinfosys/marigold-examples
+marigold package create marigold-examples/platform-model-test -o /tmp
+marigold package install /tmp/platform-model-test-0.2.0.tar.gz
+marigold package list
 ```
 
-Each directory under `marigold-examples` is a self-contained package:
-a `models.yaml` declaring which models to load, a `marigold.toml`
-declaring how to run it.
+`package create` builds an archive from a package directory and prints
+its path. `package install` copies it into the cache, extracts it, and
+records it under its name, `platform-model-test`.
 
-## Start one
+## Download its models
 
 ```bash
-marigold deployment start marigold-examples/chat
+marigold cache populate platform-model-test
 ```
 
-This brings up the full stack for that package: Postgres, a one-shot
-`cache-init` service that downloads whatever `chat`'s `models.yaml`
-declares, the worker, the API, and (since `chat` asks for it) Open
-WebUI. `cache-init` completes before the worker and API start --
-expected, they wait on it deliberately. The first run downloads the
-model; this is the only point in the whole process requiring an
-internet connection.
+The cache container reads the package's `models.yaml`, downloads each
+model the cache lacks, and registers each one in the catalogue as soon
+as its weights are present. This is the only step that needs an
+internet connection. A model that fails to download is reported and
+skipped; the others proceed.
 
-## Confirming it worked
+`curl http://localhost:8000/models` now lists the cached models.
 
-Two checks, in order:
-
-1. **The API.** Visit `http://localhost:8000/docs` and check
-   `GET /v1/models` lists the model from `chat`'s `models.yaml`. If
-   it's missing here, nothing past this point will work correctly --
-   catch it here first.
-2. **Open WebUI.** Visit `http://localhost:3000`. On a fresh cache,
-   this should show an empty chat history. Send a message and confirm
-   you get a response.
-
-## The rest of the commands
+## Run its application
 
 ```bash
-marigold deployment stop marigold-examples/chat     # tear down
-marigold deployment logs marigold-examples/chat     # tail logs
-marigold deployment status marigold-examples/chat   # container state
-marigold cache inspect                               # what's cached, where, disk usage
+marigold application start platform-model-test
+marigold application logs platform-model-test
 ```
 
-**Only one deployment runs at a time.** Starting a different package
-reconfigures the same deployment in place, rather than running two
-stacks side by side -- Postgres and the model cache persist across the
-switch. This is deliberate: the model cache is shared across every
-package on your machine, so if two packages both use the same model,
-switching between them doesn't mean downloading it twice.
+The application runs in its own container, compose project
+`marigold-platform-model-test`, with the package mounted read-only at
+`/app`. It reaches the platform through the API and nothing else.
+`platform-model-test` submits one request to every catalogued model and
+prints a line per model. The first requests are slow while each model
+loads.
 
-## Where things live
+When it has finished:
 
-Two things Marigold cares about, in two different places, for two
-different reasons:
-
-- **The model cache** -- downloaded weights, offload storage, binary
-  outputs. Host-level: one location, shared by every package you run,
-  independent of which one is currently active. Defaults to
-  `~/.marigold/cache`.
-- **Which models a package wants** -- that package's own `models.yaml`,
-  small and git-trackable, living in `marigold-examples` (or wherever
-  else you keep your own packages).
-
-Deleting the model cache resets it completely -- the next
-`marigold deployment start` rebuilds it from whatever `models.yaml`
-declares.
-
-## Configuring it
-
-An optional `config.toml` -- in your current directory,
-`~/.marigold/config.toml`, or wherever `$MARIGOLD_CONFIG` points --
-overrides the defaults. Nothing here is required to get started; a
-bare `pip install` with no config file works out of the box.
-
-```toml
-[cache]
-dir = "/data/marigold"
-
-[database]
-url = "postgresql://..."
-
-[deployment]
-tag = "v0.6.7"    # pin a specific released version
+```bash
+marigold application status platform-model-test
 ```
 
-Cache location and database connection are host-level settings, not
-something an individual package's `marigold.toml` should need to know
-about.
+shows its exit code: 0 if every model answered.
+
+## Stopping
+
+```bash
+marigold application stop platform-model-test   # the application only
+marigold platform stop --applications           # everything
+```
+
+Several applications share one platform. Stopping one leaves the
+platform and the others running.
+
+## Starting over
+
+The model cache is expensive to rebuild and safe to keep. To reset
+everything else:
+
+```bash
+marigold platform stop --applications
+sudo rm -rf /data/marigold/data/postgres
+```
+
+The next `platform start` creates a fresh database, and `cache
+populate` re-registers cached models without downloading them again.
+Deleting `data/models` as well removes every downloaded weight.
 
 ## Running air-gapped
 
-Once a model's been downloaded, it's sitting on local disk --
-inference itself makes no external request. The compose files set the
-environment variables needed to stop the worker, API, and Open WebUI
-attempting any network call once models are cached, so after the first
-successful run you can disconnect entirely and Marigold keeps working.
+Once `cache populate` has run, every model a package needs is on local
+disk. The worker is configured to make no network calls and loads only
+from the cache. After the first population, the host can be
+disconnected entirely.
 
-## What's next
+## What next
 
-This setup is the foundation the other tutorials build on: local
-document search (RAG), and adding a new model to an existing package.
-Each assumes a working deployment from this guide -- they won't repeat
-this part.
+The other tutorials build on this setup:
+[local document search with Open WebUI](/tutorials/local-rag.html), and
+[adding a new model to an example package](/tutorials/adding-a-model.html).
+Each assumes a running platform from this guide.

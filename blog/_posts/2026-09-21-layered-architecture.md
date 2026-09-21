@@ -6,7 +6,7 @@ date: 2026-09-21
 author: Marigold
 category: Engineering
 reading_time: 7
-canonical: "https://marigold.run/blog/layering.html"
+canonical: "https://marigold.run/blog/layered-architecture.html"
 og_title: "One GPU, Many Applications: Layering a Self-Hosted Inference Platform"
 og_description: "Marigold 0.7 separates the platform, the package and the application, so many applications share one GPU."
 schema: |
@@ -20,7 +20,7 @@ schema: |
     "dateModified": "2026-09-21",
     "author": { "@type": "Organization", "name": "Marigold" },
     "publisher": { "@type": "Organization", "name": "Marigold", "url": "https://marigold.run" },
-    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://marigold.run/blog/layering.html" }
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://marigold.run/blog/layered-architecture.html" }
   }
   </script>
 ---
