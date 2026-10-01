@@ -1,0 +1,79 @@
+# Keyword map for marigold.run. Excluded from the build.
+# Source: Google Ads Keyword Planner, 1 Sep 2025 - 31 Aug 2026,
+# exported 2026-10-01. bucket: average monthly searches (lowest
+# reported bucket is 50). bid_gbp: top-of-page bid, low and high.
+# Re-measure: Search Console at 4 weeks (2026-10-29) and 8 weeks (2026-11-26).
+
+pages:
+  - url: /
+    type: home
+    primary: self hosted llm
+    bucket_uk: 500
+    bid_gbp: [1.47, 5.26]
+
+  - url: /tutorials/setup.html
+    type: tutorial
+    primary: local llm server
+    bucket_uk: 50
+    bid_gbp: [1.41, 11.30]
+
+  - url: /ollama-alternative.html
+    type: landing-comparison
+    primary: ollama alternative
+    bucket_uk: 500
+    bid_gbp: [0.96, 4.12]
+
+  - url: /blog/llm-providers.html
+    type: blog
+    primary: vllm vs ollama
+    bucket_uk: 500
+    bid_gbp: [1.42, 3.85]
+    status: retitle pending   # post source not yet edited
+
+  - url: /tutorials/cursor-local-model.html
+    type: tutorial
+    primary: cursor local model
+    supporting: [local ai ide, local llm vscode, continue dev local model]
+    bucket_global: 500
+    bid_gbp: [1.39, 9.15]
+
+  - url: /tutorials/local-rag.html
+    type: tutorial
+    primary: null   # no Keyword Planner run yet
+
+  - url: /examples/chat.html
+    type: example
+    body_terms: [open webui backend, run qwen locally]
+
+  - url: /data-sovereign.html
+    type: docs
+    primary: air gapped llm   # provisional; check against bayis.co.uk map
+    bucket_uk: 50
+    status: retitle pending   # page source not yet edited
+
+  - url: /pricing.html
+    type: support
+    primary: null
+
+body_copy_only:
+  - langchain local model
+  - run mistral locally
+  - self hosted inference server
+  - openai compatible api self hosted
+  - huggingface model api self hosted
+  - run llm locally docker compose
+  - run open weight models locally
+  - llm inference consumer gpu
+  - llm electricity cost
+  - keep ai data on premises
+  - self hosted llm vs openai api cost
+  - vllm alternative
+
+owned_elsewhere:
+  site: bayis.co.uk
+  terms: [sovereign ai, private llm hosting, on premise llm]
+
+retired_urls:
+  /ide-setup.html: meta refresh to /tutorials/cursor-local-model.html
+  /open-weights.html: meta refresh to /data-sovereign.html
+  /models.html: removed (404)

@@ -1,0 +1,24 @@
+# Footer link columns. Every landing page and guide is listed here so
+# each page on the site links to it.
+columns:
+  - label: Platform
+    links:
+      - { title: Home, url: / }
+      - { title: About, url: /about.html }
+      - { title: Tutorials, url: /tutorials.html }
+      - { title: Examples, url: /examples.html }
+      - { title: The Build Log, url: /blog.html }
+
+  - label: Guides
+    links:
+      - { title: Run a local LLM server, url: /tutorials/setup.html }
+      - { title: Cursor local model, url: /tutorials/cursor-local-model.html }
+      - { title: Local document search, url: /tutorials/local-rag.html }
+      - { title: Ollama alternative, url: /ollama-alternative.html }
+      - { title: vLLM vs Ollama benchmark, url: /blog/llm-providers.html }
+
+  - label: For teams
+    links:
+      - { title: Data sovereignty, url: /data-sovereign.html }
+      - { title: Support and consulting, url: /pricing.html }
+      - { title: Sovereign AI roadmap, url: "https://www.bayis.co.uk/sovereign-ai.html" }

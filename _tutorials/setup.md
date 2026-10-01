@@ -1,33 +1,32 @@
 ---
-layout: tutorial
-title: "Setting up Marigold: platform, package and application"
-description: "Install Marigold, start the shared platform, install a package, cache its models and run its application, on your own hardware."
+title: "Run a Local LLM Server with Docker Compose"
+description: "Install the marigold CLI, start a local LLM server with Docker Compose, cache open-weight models and run a first application on your own hardware."
 date: 2026-08-16
+last_modified_at: 2026-10-01
 category: Engineering
 reading_time: 7
-canonical: "https://marigold.run/tutorials/setup.html"
-og_title: "Setting up Marigold: platform, package and application"
 og_description: "Install Marigold and run a first application against a shared, self-hosted platform. Runs air-gapped once models are cached."
+related: [chat, local-rag, adding-a-model]
 schema: |
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "Setting up Marigold: platform, package and application",
+    "headline": "Run a Local LLM Server with Docker Compose",
     "datePublished": "2026-08-16",
-    "dateModified": "2026-09-21",
-    "author": { "@type": "Organization", "name": "Marigold" },
+    "dateModified": "2026-10-01",
+    "author": { "@type": "Organization", "name": "Bay Information Systems", "@id": "https://www.bayis.co.uk/#organization" },
     "publisher": { "@type": "Organization", "name": "Marigold", "url": "https://marigold.run" },
     "mainEntityOfPage": { "@type": "TechArticle", "@id": "https://marigold.run/tutorials/setup.html" }
   }
   </script>
 ---
 
-Marigold is a self-hosted inference platform: a shared model cache, an
-API, a worker, and applications that run against them, all on your own
-hardware. This tutorial goes from nothing installed to a running
-application, and covers the conventions to understand before writing
-your own.
+This tutorial sets up Marigold as a local LLM server: a shared model
+cache, an API, a worker, and applications that run against them, all on
+your own hardware and started with Docker Compose. It goes from nothing
+installed to a running application, and covers the conventions to
+understand before writing your own.
 
 A running system has three layers. The platform is shared by
 everything on the host. A package is a list of required models plus
@@ -133,9 +132,9 @@ marigold cache populate platform-model-test
 
 The cache container reads the package's `models.yaml`, downloads each
 model the cache lacks, and registers each one in the catalogue as soon
-as its weights are present. This is the only step that needs an
-internet connection. A model that fails to download is reported and
-skipped; the others proceed.
+as its weights are present. This step, `pip install` and the first pull
+of the container images need an internet connection. A model that fails
+to download is reported and skipped; the others proceed.
 
 `curl http://localhost:8000/models` now lists the cached models.
 
@@ -160,6 +159,27 @@ marigold application status platform-model-test
 ```
 
 shows its exit code: 0 if every model answered.
+
+## Call it from your own code
+
+The local LLM server also answers on OpenAI-compatible endpoints --
+`/v1/models`, `/v1/chat/completions` and `/v1/embeddings` -- so an
+unmodified OpenAI SDK client works against it:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="unused")
+model = client.models.list().data[0].id
+reply = client.chat.completions.create(
+    model=model,
+    messages=[{"role": "user", "content": "Say hello."}],
+)
+print(reply.choices[0].message.content)
+```
+
+No API key is checked. `stream=True` returns correctly framed chunks,
+without token-level streaming.
 
 ## Stopping
 
@@ -189,12 +209,13 @@ Deleting `data/models` as well removes every downloaded weight.
 
 Once `cache populate` has run, every model a package needs is on local
 disk. The worker is configured to make no network calls and loads only
-from the cache. After the first population, the host can be
-disconnected entirely.
+from the cache. With the container images pulled and the models
+populated, the host can be disconnected entirely.
 
 ## What next
 
 The other tutorials build on this setup:
-[local document search with Open WebUI](/tutorials/local-rag.html), and
-[adding a new model to an example package](/tutorials/adding-a-model.html).
+[local document search with Open WebUI](/tutorials/local-rag.html),
+[using a local model from Cursor or VS Code](/tutorials/cursor-local-model.html),
+and [adding a new model to an example package](/tutorials/adding-a-model.html).
 Each assumes a running platform from this guide.

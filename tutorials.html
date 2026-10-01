@@ -1,11 +1,10 @@
 ---
 layout: default
 title: "Tutorials -- Marigold"
-description: "Worked tutorials for running Marigold locally: setup, local RAG, agent workflows, and IDE integration."
-canonical: "https://marigold.run/tutorials.html"
+description: "Worked tutorials for running Marigold on your own hardware: a local LLM server, local document search, Cursor and VS Code integration, and adding models."
 permalink: /tutorials.html
-og_title: "Tutorials -- Marigold"
 og_description: "Worked tutorials for the self-hosted Marigold stack."
+last_modified_at: 2026-10-01
 ---
 
 <main>
@@ -21,7 +20,8 @@ og_description: "Worked tutorials for the self-hosted Marigold stack."
 <section class="usecases">
   <div class="wrap">
     <div class="usecase-grid">
-      {% for tutorial in site.tutorials %}
+      {% assign tutorials = site.tutorials | sort: "date" %}
+      {% for tutorial in tutorials %}
       <a class="usecase-card" href="{{ tutorial.url }}">
         {% if tutorial.category %}<p class="hero-eyebrow">{{ tutorial.category }}</p>{% endif %}
         <h4>{{ tutorial.title }}</h4>

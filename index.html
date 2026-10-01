@@ -1,25 +1,42 @@
 ---
 layout: default
-title: "Self-Hosted Inference API for Open-Weight Models | Marigold by Bay Information Systems"
-description: "Marigold is a self-hosted, open source inference platform for open-weight models. Runs airgapped once set up. Typed API, declarative workflows, evals -- on your own hardware, on-premises."
-canonical: "https://marigold.run/"
-og_title: "Self-Hosted Inference API for Open-Weight Models | Marigold by Bay Information Systems"
-og_description: "Self-hosted, open source inference platform for open-weight models. Airgapped, on-premises, no cloud dependency."
+title: "Self-Hosted LLM Server and Inference API -- Marigold"
+description: "Open source self-hosted LLM server with an OpenAI-compatible API. Serves text, image and audio models from Docker Compose on your own hardware."
+og_description: "Open source self-hosted LLM server. OpenAI-compatible chat and embeddings, air-gapped once models are cached."
+last_modified_at: 2026-10-01
 schema: |
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Marigold",
-    "url": "https://marigold.run/",
-    "description": "Self-hosted, open source inference platform for open-weight models. Runs airgapped once set up. Typed async API, declarative workflow engine, evals.",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Linux, Docker",
-    "provider": {
-      "@type": "Organization",
-      "name": "Bay Information Systems",
-      "url": "https://www.bayis.co.uk"
-    }
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://marigold.run/#website",
+        "name": "Marigold",
+        "url": "https://marigold.run/",
+        "publisher": { "@id": "https://www.bayis.co.uk/#organization" }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Marigold",
+        "url": "https://marigold.run/",
+        "description": "Self-hosted, open source LLM server and inference API for open-weight models. Runs air-gapped once models are cached. Typed async API, declarative workflow engine, evals.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Linux, Docker",
+        "license": "https://opensource.org/licenses/MIT",
+        "sameAs": [
+          "https://github.com/bayinfosys/marigold",
+          "https://pypi.org/project/bayis-marigold/"
+        ],
+        "provider": { "@id": "https://www.bayis.co.uk/#organization" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://www.bayis.co.uk/#organization",
+        "name": "Bay Information Systems",
+        "url": "https://www.bayis.co.uk"
+      }
+    ]
   }
   </script>
 ---
@@ -27,30 +44,35 @@ schema: |
 <script async src="https://startupbar.co/widget/loader.js" data-startup-id="da4fb3c9-bedb-4f4e-b7b8-695c4270dbd4"></script>
 
 <section class="hero">
-   <div class="wrap">
+  <div class="wrap">
     <p class="hero-eyebrow">
       <img src="https://img.shields.io/pypi/v/bayis-marigold" alt="PyPI version" style="vertical-align:middle;">
       <img src="https://img.shields.io/github/v/tag/bayinfosys/marigold" alt="Latest tag" style="vertical-align:middle;">
       &nbsp;Open source &middot; Python &middot; Open-weight models
     </p>
-    <h1 class="slogan">A self-hosted inference API for open-weight models.</h1>
+    <h1 class="slogan">A self-hosted LLM server and inference API.</h1>
     <p class="hero-tagline">Serve HuggingFace models over a typed HTTP API, on your own hardware.</p>
     <p class="hero-sub">
-      Marigold runs text, image, and audio models locally behind an
-      OpenAI-compatible API -- chat, embeddings, image generation, and more,
-      served from Docker Compose. No request ever reaches OpenAI, Anthropic,
-      or any other external provider; runs fully airgapped once models are
-      cached.
+      Marigold runs text, image, and audio models locally from Docker
+      Compose. Chat and embeddings are served on OpenAI-compatible
+      endpoints; image generation, speech and the other model types use the
+      typed HTTP API. No request reaches OpenAI, Anthropic, or any other
+      external provider; runs air-gapped once models are cached.
     </p>
-     <pre><code>pip install bayis-marigold
+    <pre><code>pip install bayis-marigold
 git clone https://github.com/bayinfosys/marigold-examples
-marigold deployment start marigold-examples/chat</code></pre>
-     <div class="hero-actions">
-       <a href="#usecases" class="btn-primary">See what it runs</a>
-       <a href="https://github.com/bayinfosys/marigold" class="btn-secondary">View on GitHub</a>
-     </div>
-   </div>
- </section>
+marigold cache init
+marigold platform start
+marigold package create marigold-examples/chat -o /tmp
+marigold package install /tmp/chat-&lt;version&gt;.tar.gz
+marigold cache populate chat
+marigold application start chat</code></pre>
+    <div class="hero-actions">
+      <a href="/tutorials/setup.html" class="btn-primary">Read the setup guide</a>
+      <a href="https://github.com/bayinfosys/marigold" class="btn-secondary">View on GitHub</a>
+    </div>
+  </div>
+</section>
 
 <section class="statement">
   <div class="wrap">
@@ -204,6 +226,34 @@ marigold deployment start marigold-examples/chat</code></pre>
       <a href="https://pypi.org/project/json-logic-path/">json-logic-path</a>,
       both open source on PyPI.
     </p>
+    <p class="how-note">
+      Marigold (<code>bayis-marigold</code> on PyPI) is a self-hosted
+      inference server. The Marigold depth-estimation model from ETH
+      Zurich is a separate project.
+    </p>
+  </div>
+</section>
+
+<section class="usecases">
+  <div class="wrap">
+    <h2 class="section-label">Guides</h2>
+    <div class="usecase-grid">
+      <a class="usecase-card" href="/tutorials/setup.html">
+        <h4>Run a local LLM server</h4>
+        <p>Install the CLI, start the platform with Docker Compose, cache a
+        model and run a first application.</p>
+      </a>
+      <a class="usecase-card" href="/tutorials/cursor-local-model.html">
+        <h4>Cursor local model</h4>
+        <p>Point Cursor, or VS Code with Continue, at a self-hosted model,
+        and what each editor sends where.</p>
+      </a>
+      <a class="usecase-card" href="/ollama-alternative.html">
+        <h4>Ollama alternative</h4>
+        <p>Where Marigold and Ollama differ: model types, API surface,
+        request handling, and measured throughput.</p>
+      </a>
+    </div>
   </div>
 </section>
 

@@ -1,11 +1,10 @@
 ---
-layout: example
 title: "simple-rag -- retrieval-augmented chat, verified"
 description: "A worked Marigold example: chat and embedding models serving open-webui's retrieval pipeline, with a built-in test to prove retrieval is actually happening."
-canonical: "https://marigold.run/examples/simple-rag.html"
-og_title: "simple-rag -- Marigold example"
 og_description: "Upload documents, ask questions only answerable from them, confirm retrieval is real -- not the model answering from its own training."
 category: Examples
+last_modified_at: 2026-10-01
+related: [local-rag, chat, setup]
 ---
 
 Marigold serves the chat and embedding models. Open WebUI handles
@@ -17,7 +16,9 @@ a set of questions only answerable if retrieval genuinely happened.
 
 ## Run it
 
-This assumes the [setup guide](/tutorials/setup.html) is done.
+This assumes the [setup guide](/tutorials/setup.html) is done. The
+[local document search tutorial](/tutorials/local-rag.html) walks
+through the same package step by step.
 
 ```bash
 marigold package create marigold-examples/simple-rag -o /tmp

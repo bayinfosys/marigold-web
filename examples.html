@@ -1,9 +1,9 @@
 ---
 layout: default
 title: "Examples -- Marigold"
-description: "Ready-to-run example applications for Marigold: chat, RAG, benchmarking, and agent setups."
-canonical: "https://marigold.run/examples.html"
+description: "Ready-to-run Marigold application packages: private chat, retrieval-augmented chat, platform checks, and LLM power and latency benchmarking."
 permalink: /examples.html
+last_modified_at: 2026-10-01
 ---
 
 <main>
@@ -14,12 +14,15 @@ permalink: /examples.html
     <h1 class="slogan">Ready-to-run application packages.</h1>
     <p class="hero-sub">
       Each example is a self-contained package -- a model list and a
-      run configuration. Clone the repo, point <code>marigold</code> at
-      a directory by name, and it's running.
+      run configuration. Clone the repo, build a package from a directory,
+      install it, and start its application.
     </p>
     <pre><code>pip install bayis-marigold
 git clone https://github.com/bayinfosys/marigold-examples
-marigold deployment start marigold-examples/chat</code></pre>
+marigold package create marigold-examples/chat -o /tmp
+marigold package install /tmp/chat-&lt;version&gt;.tar.gz
+marigold cache populate chat
+marigold application start chat</code></pre>
   </div>
 </section>
 

@@ -1,22 +1,17 @@
 <footer>
   <div class="wrap">
+    {% for column in site.data.footer.columns %}
     <div class="footer-grid">
-      <p class="footer-label">Platform</p>
-      <a href="/">Home</a>
-      <a href="/about.html">About</a>
-      <a href="/tutorials.html">Tutorials</a>
-      <a href="/examples.html">Examples</a>
-      <a href="/blog.html">The Build Log</a>
+      <p class="footer-label">{{ column.label }}</p>
+      {% for link in column.links %}
+      <a href="{{ link.url }}">{{ link.title }}</a>
+      {% endfor %}
     </div>
-    <div class="footer-grid">
-      <p class="footer-label">For teams</p>
-      <a href="/data-sovereign.html">Data sovereignty</a>
-      <a href="/pricing.html">Pricing</a>
-    </div>
+    {% endfor %}
     <div class="footer-grid">
       <p class="footer-label"><a href="https://www.bayis.co.uk">Bay Information Systems</a></p>
       <a href="mailto:ed@bayis.co.uk">ed@bayis.co.uk</a>
-      <p class="footer-copy">Marigold &copy; Bay Information Systems 2026</p>
+      <p class="footer-copy">Marigold &copy; Bay Information Systems {{ site.time | date: "%Y" }}</p>
     </div>
   </div>
 </footer>

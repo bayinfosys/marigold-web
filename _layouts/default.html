@@ -1,26 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  {%- comment -%}
+    Canonical is computed from the page URL so every page carries its
+    .html address. Front matter "canonical" values are ignored.
+  {%- endcomment -%}
+  {%- assign canonical = page.url | absolute_url -%}
+  {%- assign page_description = page.description | default: site.description | strip_newlines | strip -%}
+  {%- assign og_title = page.og_title | default: page.title -%}
+  {%- assign og_description = page.og_description | default: page_description | strip_newlines | strip -%}
+  {%- assign og_image = page.image | default: "/assets/og-default.png" | absolute_url -%}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="{{ page.description }}">
+  <title>{{ page.title | escape }}</title>
+  <meta name="description" content="{{ page_description | escape }}">
   <meta name="author" content="Bay Information Systems">
-  <link rel="canonical" href="{{ page.canonical }}">
+  {%- if page.robots %}
+  <meta name="robots" content="{{ page.robots }}">
+  {%- endif %}
+  <link rel="canonical" href="{{ canonical }}">
   <link rel="icon" type="image/png" href="/favicon.png">
 
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="{{ page.canonical }}">
-  <meta property="og:title" content="{{ page.og_title | default: page.title }}">
-  <meta property="og:description" content="{{ page.og_description | default: page.description }}">
+  <meta property="og:type" content="{{ page.og_type | default: 'website' }}">
+  <meta property="og:url" content="{{ canonical }}">
+  <meta property="og:title" content="{{ og_title | escape }}">
+  <meta property="og:description" content="{{ og_description | escape }}">
   <meta property="og:site_name" content="Marigold">
-
-  {% if page.image %}
-  <meta property="og:image" content="https://marigold.run{{ page.image }}">
+  <meta property="og:image" content="{{ og_image }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://marigold.run{{ page.image }}">
-  {% endif %}
-
-  <title>{{ page.title }}</title>
+  <meta name="twitter:title" content="{{ og_title | escape }}">
+  <meta name="twitter:description" content="{{ og_description | escape }}">
+  <meta name="twitter:image" content="{{ og_image }}">
 
   {% if page.schema %}{{ page.schema }}{% endif %}
 
@@ -30,6 +42,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Knewave&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link rel="stylesheet" href="/style.css">
+  <style>
+    /* Variables used by post.html and tutorial.html, mapped onto style.css.
+       Move into style.css :root when the layout styles are consolidated. */
+    :root {
+      --border:     var(--rule);
+      --border-dim: var(--rule);
+      --surface:    var(--bg-alt);
+      --accent:     var(--amber);
+      --accent-dim: var(--amber-lt);
+    }
+    .related-work { padding: var(--gap) 0; border-bottom: 1px solid var(--rule); }
+    .related-list { list-style: none; }
+    .related-list li { padding: 0.6rem 0; border-bottom: 1px solid var(--rule); font-size: 0.95rem; }
+    .related-list li:last-child { border-bottom: none; }
+    .related-list a { color: var(--amber); text-decoration: none; }
+    .related-list a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .related-desc { color: var(--ink-mid); font-size: 0.875rem; }
+  </style>
   <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 </head>
 <body>

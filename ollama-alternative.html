@@ -1,0 +1,245 @@
+---
+layout: default
+title: "Ollama Alternative for Self-Hosted Inference -- Marigold"
+description: "Marigold is an open source Ollama alternative for teams serving more than chat: embeddings, vision, speech, image generation and evals behind one self-hosted inference API."
+og_description: "Where Marigold and Ollama differ: model types, API surface, request handling and measured throughput on one consumer GPU."
+og_type: article
+last_modified_at: 2026-10-01
+schema: |
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Ollama Alternative for Self-Hosted Inference",
+    "datePublished": "2026-10-01",
+    "dateModified": "2026-10-01",
+    "author": { "@id": "https://www.bayis.co.uk/#organization" },
+    "publisher": { "@type": "Organization", "@id": "https://www.bayis.co.uk/#organization", "name": "Bay Information Systems", "url": "https://www.bayis.co.uk" },
+    "mainEntityOfPage": "https://marigold.run/ollama-alternative.html",
+    "about": { "@type": "SoftwareApplication", "name": "Marigold", "url": "https://marigold.run/" }
+  }
+  </script>
+---
+
+<main>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="hero-eyebrow">Comparison</p>
+    <h1 class="slogan">An Ollama alternative for self-hosted inference.</h1>
+    <p class="hero-tagline">Open-weight models on your own hardware, arranged as a platform.</p>
+    <p class="hero-sub">
+      Ollama runs open models on one machine, from a desktop app, a
+      terminal or a coding agent. Marigold is an open source Ollama
+      alternative arranged as a platform: a shared model cache, a queue, a
+      worker, and applications that call one typed inference API, with
+      text, image and audio models served side by side.
+    </p>
+    <div class="hero-actions">
+      <a href="/tutorials/setup.html" class="btn-primary">Read the setup guide</a>
+      <a href="/blog/llm-providers.html" class="btn-secondary">See the benchmark</a>
+    </div>
+  </div>
+</section>
+
+<section class="statement">
+  <div class="wrap">
+    <p>
+      Both run open-weight models with no request leaving your hardware
+      once the models are downloaded.
+      <strong>The choice turns on what you serve, and how many
+      applications call it.</strong>
+    </p>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="wrap">
+    <h2 class="section-label">Side by side</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Criterion</th>
+          <th>Ollama</th>
+          <th class="col-marigold">Marigold</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Model source</td>
+          <td>Ollama model library; imports GGUF and Safetensors</td>
+          <td>HuggingFace repositories declared in a package's <code>models.yaml</code>, loaded with Transformers; optional 4-bit loading</td>
+        </tr>
+        <tr>
+          <td>Model types</td>
+          <td>Chat, vision, embeddings, reasoning</td>
+          <td>Instruct, img2txt, text and image embedding, txt2img, tts, txt2audio, depth, img2mask, text, image and image-text evals</td>
+        </tr>
+        <tr>
+          <td>OpenAI-compatible API</td>
+          <td><code>/v1/chat/completions</code>, <code>/v1/completions</code>, <code>/v1/embeddings</code>, <code>/v1/models</code>, <code>/v1/responses</code>; streaming and tools</td>
+          <td><code>/v1/chat/completions</code>, <code>/v1/embeddings</code>, <code>/v1/models</code>; no token-level streaming; one tool call per assistant turn</td>
+        </tr>
+        <tr>
+          <td>Other APIs</td>
+          <td>Native Ollama API; Anthropic-compatible clients</td>
+          <td>Typed submit-and-poll API per model type</td>
+        </tr>
+        <tr>
+          <td>Request handling</td>
+          <td>Request and streamed response</td>
+          <td>Jobs queued in Postgres, run by a worker; identical requests return the stored result</td>
+        </tr>
+        <tr>
+          <td>Multi-step work</td>
+          <td>In client code</td>
+          <td>Declarative workflows: parallel steps, branching on outputs, per-step audit trail</td>
+        </tr>
+        <tr>
+          <td>Hosted option</td>
+          <td>Cloud models, run without a local GPU</td>
+          <td>None; runs where you deploy it</td>
+        </tr>
+        <tr>
+          <td>Runs as</td>
+          <td>App or local server, port 11434</td>
+          <td>Docker Compose: API on port 8000, CPU or NVIDIA GPU worker</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="how-note">
+      Ollama details from <a href="https://docs.ollama.com/">docs.ollama.com</a>,
+      checked 1 October 2026.
+    </p>
+  </div>
+</section>
+
+<section id="benchmark">
+  <div class="wrap">
+    <h2 class="section-label">Measured on one consumer GPU</h2>
+    <p class="faq-a" style="margin-bottom:1.5rem;">
+      Three serving stacks, one 6GB NVIDIA card (about GBP 170), one model:
+      Qwen2.5-1.5B-Instruct. 86 prompts at four concurrency levels, three
+      repeats, 1,032 calls per stack.
+    </p>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Stack</th>
+          <th>Tokens / sec</th>
+          <th>Time to first token</th>
+          <th>Mean duration</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>vLLM</td><td>54.77</td><td>0.063s</td><td>1.449s</td></tr>
+        <tr><td>Ollama</td><td>39.03</td><td>1.528s</td><td>2.196s</td></tr>
+        <tr><td class="col-marigold">Marigold</td><td>11.58</td><td>not measured (no token streaming)</td><td>8.015s</td></tr>
+      </tbody>
+    </table>
+    <p class="faq-a">
+      Marigold was the slowest per request: it has no request batching. The
+      <a href="/blog/llm-providers.html">full vLLM vs Ollama benchmark</a>
+      covers a 14.7x speedup from one attention configuration change, and
+      a VRAM problem: every stack allocates GPU memory greedily, so
+      whichever server starts second on a shared card fails to allocate.
+    </p>
+  </div>
+</section>
+
+<section id="ollama-fits">
+  <div class="wrap">
+    <h2 class="section-label">Where Ollama is the right tool</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <p class="faq-q">One developer, one chat model</p>
+        <p class="faq-a">Ollama installs as an app and runs a model in one
+        command. It returned responses faster than Marigold in our test.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">GGUF and quantised weights</p>
+        <p class="faq-a">Ollama imports GGUF files prepared with llama.cpp
+        tooling. Marigold loads HuggingFace repositories through
+        Transformers.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Clients that need the full chat API</p>
+        <p class="faq-a">Coding agents and desktop clients that rely on
+        token streaming, parallel tool calls, the Responses API or
+        Anthropic-style clients work against Ollama today.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">No local GPU</p>
+        <p class="faq-a">Ollama's cloud models run without one. Marigold has
+        no hosted service; it runs on CPU or on your own GPU.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="marigold-fits">
+  <div class="wrap">
+    <h2 class="section-label">Where Marigold fits</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <p class="faq-q">More than chat</p>
+        <p class="faq-a">Speech, image generation, segmentation, depth and
+        scoring models sit behind the same API as the chat model, loaded
+        from one shared weight cache.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Pipelines across models</p>
+        <p class="faq-a">A workflow chains models -- extract, classify,
+        summarise, convert to speech -- with parallel steps, branching on
+        output values and a per-step audit trail.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Several applications on one host</p>
+        <p class="faq-a">Each package declares the models it needs. The
+        platform downloads each model once; applications run in their own
+        containers and reach models only through the API.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Air-gapped and regulated hosts</p>
+        <p class="faq-a">The worker makes no network calls and loads only from
+        the cache. All state sits under one directory.
+        <a href="/data-sovereign.html">What leaves the machine</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="switch">
+  <div class="wrap">
+    <h2 class="section-label">Trying it next to Ollama</h2>
+    <pre><code>pip install bayis-marigold
+git clone https://github.com/bayinfosys/marigold-examples
+marigold cache init
+marigold platform start
+marigold package create marigold-examples/chat -o /tmp
+marigold package install /tmp/chat-&lt;version&gt;.tar.gz
+marigold cache populate chat
+marigold application start chat</code></pre>
+    <p class="faq-a">
+      An OpenAI-SDK client moves across by changing its base URL from
+      <code>http://localhost:11434/v1</code> to
+      <code>http://localhost:8000/v1</code>. On a single GPU, stop Ollama
+      before starting the Marigold worker: both allocate VRAM greedily.
+      The <a href="/tutorials/setup.html">local LLM server setup guide</a>
+      covers each step.
+    </p>
+  </div>
+</section>
+
+<section class="tagline-break">
+  <div class="wrap">
+    <h2 class="slogan">Run it next to what you have.</h2>
+    <p>Open source. Clone it, run it on your own hardware.</p>
+    <div class="hero-actions">
+      <a href="https://github.com/bayinfosys/marigold" class="btn-primary">View on GitHub</a>
+      <a href="/tutorials/setup.html" class="btn-secondary">Read the setup guide</a>
+    </div>
+  </div>
+</section>
+
+</main>

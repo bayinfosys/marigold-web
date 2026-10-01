@@ -3,7 +3,7 @@ url: https://marigold.run
 baseurl: ""
 
 description: >
-  Self-hosted, open source inference platform for open-weight
+  Self-hosted, open source LLM server and inference API for open-weight
   HuggingFace models. Typed async API, declarative workflow engine,
   and an eval surface, running on your own hardware.
 
@@ -21,22 +21,40 @@ collections:
     output: true
     permalink: /examples/:path.html
 
+# Head tags read these values; a page overrides any of them in front matter.
+#   og_type   website | article
+#   image     path of the 1200x630 social card
+#   robots    e.g. "noindex"
+# last_modified_at in front matter sets the sitemap lastmod.
 defaults:
+  - scope:
+      path: ""
+    values:
+      og_type: website
+      image: /assets/og-default.png
   - scope:
       path: ""
       type: posts
     values:
       permalink: /blog/:slug.html
+      og_type: article
   - scope:
       path: ""
       type: tutorials
     values:
       layout: tutorial
+      og_type: article
   - scope:
       path: ""
       type: examples
     values:
       layout: tutorial
+      og_type: article
+  - scope:
+      path: "403.html"
+    values:
+      sitemap: false
+      robots: noindex
 
 exclude:
   - Gemfile
@@ -44,3 +62,5 @@ exclude:
   - node_modules
   - README.md
   - dist
+  - seo
+  - scripts
