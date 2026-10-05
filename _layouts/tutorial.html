@@ -1,164 +1,6 @@
 ---
 layout: default
 ---
-<style>
-/* -----------------------------------------------------------------------
-   Tutorial layout -- shares structure with post.html.
-   Move both to style.css together when the blog/tutorials styling
-   gets consolidated.
------------------------------------------------------------------------ */
-.post-header {
-  padding: 4rem 0 2.5rem;
-  border-bottom: 1px solid var(--rule);
-}
-
-.post-header .wrap {
-  max-width: 72ch;
-}
-
-.post-title {
-  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
-  line-height: 1.2;
-  font-family: 'Knewave', 'Trebuchet MS', sans-serif;
-  color: var(--ink);
-  margin: 0.5rem 0 1rem;
-}
-
-.post-meta {
-  font-size: 0.8rem;
-  color: var(--ink-mid);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin-bottom: 1.25rem;
-}
-
-.post-body {
-  padding: 3rem 0 4rem;
-  max-width: 72ch;
-  margin: 0 auto;
-}
-
-.post-body h2 {
-  font-size: 1.4rem;
-  font-family: 'Knewave', 'Trebuchet MS', sans-serif;
-  color: var(--ink);
-  margin: 3rem 0 0.75rem;
-  letter-spacing: 0.01em;
-}
-
-.post-body h3 {
-  font-size: 1.05rem;
-  font-family: 'Junction', 'Trebuchet MS', 'Gill Sans', sans-serif;
-  font-weight: 600;
-  color: var(--ink);
-  margin: 2rem 0 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.post-body p {
-  font-size: 0.975rem;
-  line-height: 1.75;
-  color: var(--ink-mid);
-  margin: 0 0 1.25rem;
-}
-
-.post-body p strong {
-  color: var(--ink);
-  font-weight: 600;
-}
-
-.post-body a {
-  color: var(--amber);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.post-body ul, .post-body ol {
-  padding-left: 1.5rem;
-  margin: 0 0 1.25rem;
-}
-
-.post-body li {
-  font-size: 0.975rem;
-  line-height: 1.75;
-  color: var(--ink-mid);
-  margin-bottom: 0.4rem;
-}
-
-.post-body pre {
-  background: var(--bg-alt);
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  padding: 1rem 1.25rem;
-  overflow-x: auto;
-  margin: 1.5rem 0;
-}
-
-.post-body code {
-  font-family: 'IBM Plex Mono', 'Courier New', monospace;
-  font-size: 0.82rem;
-  color: var(--ink);
-  line-height: 1.6;
-}
-
-.post-body p code {
-  background: var(--bg-alt);
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  padding: 1px 5px;
-}
-
-.post-body table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1.5rem 0 2rem;
-  font-size: 0.875rem;
-}
-
-.post-body table th {
-  text-align: left;
-  font-family: 'Junction', 'Trebuchet MS', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-mid);
-  border-bottom: 1px solid var(--rule);
-  padding: 0.5rem 0.75rem;
-}
-
-.post-body table td {
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--rule);
-  color: var(--ink-mid);
-  vertical-align: top;
-}
-
-@media (max-width: 640px) {
-  .post-body {
-    padding: 2rem 1rem 3rem;
-  }
-}
-</style>
-
-{%- assign section_title = "Tutorials" -%}
-{%- assign section_url = "/tutorials.html" -%}
-{%- if page.collection == "examples" -%}
-  {%- assign section_title = "Examples" -%}
-  {%- assign section_url = "/examples.html" -%}
-{%- endif -%}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Marigold", "item": "{{ '/' | absolute_url }}" },
-    { "@type": "ListItem", "position": 2, "name": "{{ section_title }}", "item": "{{ section_url | absolute_url }}" },
-    { "@type": "ListItem", "position": 3, "name": {{ page.title | jsonify }}, "item": "{{ page.url | absolute_url }}" }
-  ]
-}
-</script>
-
 <main>
 
   <article itemscope itemtype="https://schema.org/TechArticle">
@@ -167,14 +9,12 @@ layout: default
       <div class="wrap">
         {% if page.category %}<p class="hero-eyebrow">{{ page.category }}</p>{% endif %}
         <h1 class="post-title" itemprop="headline">{{ page.title }}</h1>
-        {% if page.collection == "tutorials" %}
         <p class="post-meta">
           <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
             {{ page.date | date: "%-d %B %Y" }}
           </time>
           {% if page.reading_time %}&nbsp;&mdash;&nbsp;{{ page.reading_time }} min read{% endif %}
         </p>
-        {% endif %}
       </div>
     </header>
 
@@ -189,7 +29,7 @@ layout: default
   <section class="tagline-break">
     <div class="wrap">
       <h2 class="slogan">Try it yourself.</h2>
-      <p>All example code is in the repo. Clone it and run this locally.</p>
+      <p>All example code is in the repo. Clone it and run this tutorial locally.</p>
       <div class="hero-actions">
         <a href="https://github.com/bayinfosys/marigold" class="btn-primary">View on GitHub</a>
         <a href="/tutorials/setup.html" class="btn-secondary">Setup guide</a>

@@ -42,24 +42,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Knewave&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link rel="stylesheet" href="/style.css">
-  <style>
-    /* Variables used by post.html and tutorial.html, mapped onto style.css.
-       Move into style.css :root when the layout styles are consolidated. */
-    :root {
-      --border:     var(--rule);
-      --border-dim: var(--rule);
-      --surface:    var(--bg-alt);
-      --accent:     var(--amber);
-      --accent-dim: var(--amber-lt);
-    }
-    .related-work { padding: var(--gap) 0; border-bottom: 1px solid var(--rule); }
-    .related-list { list-style: none; }
-    .related-list li { padding: 0.6rem 0; border-bottom: 1px solid var(--rule); font-size: 0.95rem; }
-    .related-list li:last-child { border-bottom: none; }
-    .related-list a { color: var(--amber); text-decoration: none; }
-    .related-list a:hover { text-decoration: underline; text-underline-offset: 3px; }
-    .related-desc { color: var(--ink-mid); font-size: 0.875rem; }
-  </style>
   <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 </head>
 <body>
@@ -73,7 +55,7 @@
 <script src="https://www.dev.clientlog.bayis.co.uk/clientlog.js"></script>
 <script>
   const logger = clientlog.createLogger({
-    endpoint: "https://api.dev.clientlog.bayis.co.uk/v1/event",
+    endpoint: "https://api.clientlog.bayis.co.uk/v1/event",
     project: "marigold/home"
   });
 </script>

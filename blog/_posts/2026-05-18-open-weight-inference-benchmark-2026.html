@@ -5,6 +5,7 @@ description: "Throughput and latency measurements across 23 instruct models, 8 e
 date: 2026-05-18
 author: Marigold
 category: Engineering
+charts: true
 reading_time: 8
 canonical: "https://marigold.run/blog/open-weight-inference-benchmark-2026.html"
 og_title: "Open-weight model inference benchmark -- Marigold"
@@ -23,30 +24,6 @@ schema: |
   }
   </script>
 ---
-
-<style>
-.post-stat-row {
-  display: flex; gap: 2rem; flex-wrap: wrap;
-  margin: 1.5rem 0 2.5rem; padding: 1.5rem;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
-}
-.post-stat        { display: flex; flex-direction: column; gap: 0.25rem; }
-.post-stat-value  { font-size: 2rem; font-family: 'Knewave','Trebuchet MS',sans-serif; color: var(--ink); line-height: 1; }
-.post-stat-label  { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-mid); }
-
-.chart-wrap       { margin: 1.5rem 0 0.5rem; padding: 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
-.chart-wrap canvas { display: block; width: 100% !important; }
-.chart-caption    { font-size: 0.78rem; color: var(--ink-mid); margin: 0.5rem 0 1.5rem; font-style: italic; }
-
-.bm-table         { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.85rem; }
-.bm-table th      { text-align: left; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-mid); border-bottom: 1px solid var(--border); padding: 0.4rem 0.75rem; white-space: nowrap; }
-.bm-table th.sort-asc::after  { content: " \25B2"; font-size: 0.6rem; }
-.bm-table th.sort-desc::after { content: " \25BC"; font-size: 0.6rem; }
-.bm-table td      { padding: 0.4rem 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--ink-mid); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
-.bm-table td:first-child { font-family: 'Junction','Trebuchet MS',sans-serif; font-size: 0.85rem; }
-.bm-table tr:last-child td { border-bottom: none; }
-.bm-table tr:hover td { background: var(--surface); }
-</style>
 
 <!-- -----------------------------------------------------------------------
    Benchmark data -- crawlable inline JSON, consumed by benchmark-charts.js
@@ -219,11 +196,6 @@ schema: |
    Page content
 ----------------------------------------------------------------------- -->
 
-<main>
-<article class="post-article" itemscope itemtype="https://schema.org/BlogPosting">
-
-<div class="post-body wrap" itemprop="articleBody">
-
 <h1>Open-weight model inference on dedicated UK hardware: benchmark results</h1>
 <p>Throughput and latency measurements across 23 instruct models, 8 embedding models, 3 text-eval models, and 7 TTS models. 738 completed jobs, zero errors, on private AWS infrastructure in eu-west-2</p>
 
@@ -365,11 +337,3 @@ vLLM as a universal runtime. The throughput numbers in this benchmark reflect
 <code>transformers</code> sequential inference; vLLM integration for the instruct
 tier specifically is on the roadmap and would materially improve the tok/s figures
 for that model class.</p>
-
-</div>
-</article>
-
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script src="/assets/js/benchmark-charts.js" defer></script>

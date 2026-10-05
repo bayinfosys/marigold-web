@@ -6,6 +6,7 @@ date: 2026-07-02
 author: Marigold
 category: Engineering
 reading_time: 7
+charts: true
 canonical: "https://marigold.run/blog/vlm-inference-benchmark.html"
 og_title: "Vision-language model benchmark on a single RTX 3060 -- Marigold"
 og_description: "Four open-weight VLMs benchmarked locally on one consumer GPU. Per-request power, VRAM, and throughput across 4,004 image requests."
@@ -24,43 +25,6 @@ schema: |
   }
   </script>
 ---
-
-<style>
-.post-stat-row {
-  display: flex; gap: 2rem; flex-wrap: wrap;
-  margin: 1.5rem 0 2.5rem; padding: 1.5rem;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
-}
-.post-stat        { display: flex; flex-direction: column; gap: 0.25rem; }
-.post-stat-value  { font-size: 2rem; font-family: 'Knewave','Trebuchet MS',sans-serif; color: var(--ink); line-height: 1; }
-.post-stat-label  { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-mid); }
-
-.chart-wrap       { margin: 1.5rem 0 0.5rem; padding: 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
-.chart-wrap canvas { display: block; width: 100% !important; }
-.chart-caption    { font-size: 0.78rem; color: var(--ink-mid); margin: 0.5rem 0 1.5rem; font-style: italic; }
-
-.bm-table         { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.85rem; }
-.bm-table th      { text-align: left; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-mid); border-bottom: 1px solid var(--border); padding: 0.4rem 0.75rem; white-space: nowrap; cursor: pointer; }
-.bm-table th.sort-asc::after  { content: " \25B2"; font-size: 0.6rem; }
-.bm-table th.sort-desc::after { content: " \25BC"; font-size: 0.6rem; }
-.bm-table td      { padding: 0.4rem 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--ink-mid); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
-.bm-table td:first-child { font-family: 'Junction','Trebuchet MS',sans-serif; font-size: 0.85rem; }
-.bm-table tr:last-child td { border-bottom: none; }
-.bm-table tr:hover td { background: var(--surface); }
-
-.seg-legend       { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 0.75rem; font-size: 0.78rem; }
-.seg-chip         { display: flex; align-items: center; gap: 4px; cursor: pointer; padding: 3px 8px; border-radius: 6px; border: 0.5px solid var(--border); color: var(--ink-mid); user-select: none; }
-.seg-chip .dot    { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-.seg-chip.off     { opacity: 0.35; }
-
-.example-row      { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
-@media (max-width: 640px) { .example-row { grid-template-columns: 1fr; } }
-.example-card     { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.25rem; }
-.example-card .model-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-mid); margin-bottom: 0.5rem; font-family: 'IBM Plex Mono', monospace; }
-.example-card .tok-count { float: right; font-size: 0.7rem; color: var(--ink-mid); font-family: 'IBM Plex Mono', monospace; }
-.example-card p   { font-size: 0.83rem; color: var(--ink-mid); margin: 0; line-height: 1.55; }
-.example-image    { width: 100%; border-radius: 3px; margin-bottom: 1.25rem; display: block; border: 1px solid var(--border); }
-</style>
 
 <!-- -----------------------------------------------------------------------
    Benchmark data -- crawlable inline JSON
@@ -144,11 +108,6 @@ schema: |
 <!-- -----------------------------------------------------------------------
    Page content
 ----------------------------------------------------------------------- -->
-
-<main>
-<article class="post-article" itemscope itemtype="https://schema.org/BlogPosting">
-
-<div class="post-body wrap" itemprop="articleBody">
 
 <h1>Vision-language models on a consumer GPU: four models, 4,004 images, one RTX 3060</h1>
 <p>Four open-weight vision-language models, 1,001 distinct images from COCO val2017, 4,004 requests total, run on a single RTX 3060 through Marigold's local Docker Compose stack.</p>
@@ -235,13 +194,12 @@ Click any model in the legend to hide or show it across all three charts.</p>
   <canvas id="chart-inference" height="220"></canvas>
 </div>
 
-<p>The charts show:
+<p>The charts show:</p>
 <ol>
 <li>Mean GPU power draw per request in watts, as reported by <code>nvml</code>.</li>
 <li>Peak VRAM per request in GB, including activations and static model layers.</li>
 <li>Server-side inference time per request in seconds.</li>
 </ol>
-</p>
 
 <p>PaliGemma2's power draw (mean 78.5 W) sits well below the three larger models.
 This reflects both the smaller parameter count and the shorter per-request inference time: less sustained compute load means less energy drawn per image.
@@ -266,8 +224,7 @@ within the 256-token cap.</p>
 <img class="example-image"
      src="/assets/data/000000286458.jpg"
      alt="Two photographs side by side, each showing an open suitcase with travel contents laid out on a tiled floor. A yellow baggage watermark appears at the lower right."
-     loading="lazy"
-     style="max-width: 600px;">
+     loading="lazy">
 
 <div class="example-row">
   <div class="example-card">
@@ -344,10 +301,3 @@ With <code>idle_timeout</code> raised to keep the model resident between request
 <p>The benchmark harness is published under <code>img2txt-providers</code> in the <code>marigold-benchmarks</code> repository.
 Images are sourced from COCO val2017, downloaded via the <code>coco_val2017</code> generator in <code>image_sources.py</code> with MD5-keyed local caching.
 The raw results CSV, conversion script, and per-request JSON data file are included alongside the post.</p>
-
-</div>
-</article>
-</main>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script src="/assets/js/benchmark-charts.js"></script>

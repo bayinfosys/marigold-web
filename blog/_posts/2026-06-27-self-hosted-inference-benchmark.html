@@ -6,6 +6,7 @@ date: 2026-06-27
 author: Marigold
 category: Engineering
 reading_time: 7
+charts: true
 canonical: "https://marigold.run/blog/self-hosted-inference-benchmark.html"
 og_title: "Self-hosted inference on a single RTX 3060 -- Marigold"
 og_description: "14 open-weight instruct models benchmarked locally on one consumer GPU. Per-request power and VRAM telemetry."
@@ -23,35 +24,6 @@ schema: |
   }
   </script>
 ---
-
-<style>
-.post-stat-row {
-  display: flex; gap: 2rem; flex-wrap: wrap;
-  margin: 1.5rem 0 2.5rem; padding: 1.5rem;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
-}
-.post-stat        { display: flex; flex-direction: column; gap: 0.25rem; }
-.post-stat-value  { font-size: 2rem; font-family: 'Knewave','Trebuchet MS',sans-serif; color: var(--ink); line-height: 1; }
-.post-stat-label  { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-mid); }
-
-.chart-wrap       { margin: 1.5rem 0 0.5rem; padding: 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
-.chart-wrap canvas { display: block; width: 100% !important; }
-.chart-caption    { font-size: 0.78rem; color: var(--ink-mid); margin: 0.5rem 0 1.5rem; font-style: italic; }
-
-.bm-table         { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.85rem; }
-.bm-table th      { text-align: left; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-mid); border-bottom: 1px solid var(--border); padding: 0.4rem 0.75rem; white-space: nowrap; cursor: pointer; }
-.bm-table th.sort-asc::after  { content: " \25B2"; font-size: 0.6rem; }
-.bm-table th.sort-desc::after { content: " \25BC"; font-size: 0.6rem; }
-.bm-table td      { padding: 0.4rem 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--ink-mid); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
-.bm-table td:first-child { font-family: 'Junction','Trebuchet MS',sans-serif; font-size: 0.85rem; }
-.bm-table tr:last-child td { border-bottom: none; }
-.bm-table tr:hover td { background: var(--surface); }
-
-.seg-legend       { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 0.75rem; font-size: 0.78rem; }
-.seg-chip         { display: flex; align-items: center; gap: 4px; cursor: pointer; padding: 3px 8px; border-radius: 6px; border: 0.5px solid var(--border); color: var(--ink-mid); user-select: none; }
-.seg-chip .dot    { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-.seg-chip.off     { opacity: 0.35; }
-</style>
 
 <!-- -----------------------------------------------------------------------
    Benchmark data -- crawlable inline JSON
@@ -114,11 +86,6 @@ schema: |
    Page content
 ----------------------------------------------------------------------- -->
 
-<main>
-<article class="post-article" itemscope itemtype="https://schema.org/BlogPosting">
-
-<div class="post-body wrap" itemprop="articleBody">
-
 <h1>Self-hosted inference on a single consumer GPU: 14 models on an RTX 3060</h1>
 <p>14 open-weight instruct models, 1,204 requests, 280k tokens, run entirely on a single RTX 3060 through Marigold's local Docker Compose stack.</p>
 
@@ -167,13 +134,12 @@ Click any model in the legend to hide or show it across all three charts.
   <canvas id="chart-inference" height="220"></canvas>
 </div>
 
-<p>The charts contain:
+<p>The charts show:</p>
 <ol>
-<li>Mean power draw (watts) per request as reported by <code>nvml</code>.</li>
-<li>Peak VRAM (GB) per request -- this includes the activations, KV-cache and static layers.</li>
-<li>Server-side inference time (seconds) per request.</li>
+<li>Mean GPU power draw per request in watts, as reported by <code>nvml</code>.</li>
+<li>Peak VRAM per request in GB, including activations and static model layers.</li>
+<li>Server-side inference time per request in seconds.</li>
 </ol>
-</p>
 
 <h2>Observations</h2>
 
@@ -210,11 +176,3 @@ That is the headline number for anyone weighing self-hosting against an API bill
 
 <p>The raw benchmark harness output is a CSV of one row per request, with per-request power and VRAM sampled directly on the worker.
 Both data and the conversion script are published alongside the code on GitHub.</p>
-
-</div>
-</article>
-
-</main>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script src="/assets/js/benchmark-charts.js"></script>
