@@ -1,0 +1,8 @@
+# Checked out from bayinfosys/marigold at build time; see .github/workflows/site.yml
+/docs/
+/_includes/marigold-readme.md
+/_marigold/
+
+# Jekyll
+/_site/
+/.jekyll-cache/
