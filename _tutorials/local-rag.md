@@ -5,36 +5,35 @@ date: 2026-10-01
 last_modified_at: 2026-10-01
 category: Engineering
 reading_time: 5
-related: [setup, simple-rag, adding-a-model]
+related: [getting-started, examples, building]
 ---
 
 Ask questions of your own documents with every step on your own
 hardware. Marigold serves the chat and embedding models; Open WebUI
 handles upload, chunking, storage and retrieval. This tutorial starts
-the `simple-rag` package, checks that the embedding settings line up,
+the `simple-rag` application, checks that the embedding settings line up,
 and shows where each piece of data lives.
 
-This assumes the [setup guide](/tutorials/setup.html) is done and the
-platform is running.
+This assumes [Getting started](/docs/getting-started.html) is done, so
+the examples registry is added.
 
 ## Start it
 
-The `simple-rag` package has this wired up: a chat model and an
+The `simple-rag` application has this wired up: a chat model and an
 embedding model in its `models.yaml`, `webui` in its `compose_files`,
 and Open WebUI's `RAG_EMBEDDING_MODEL` pointed at the same embedding
 model through its `[environment]` table:
 
 ```bash
-marigold package create marigold-examples/simple-rag -o /tmp
-marigold package install /tmp/simple-rag-<version>.tar.gz
+marigold application install simple-rag
 marigold cache populate simple-rag
 marigold application start simple-rag
 ```
 
-`package create` prints the archive path. `cache populate` downloads
-both models. `application start` adds Open WebUI to the platform, on
-the applications network as a client of the API, then runs the
-package's application, which checks that both models are in the
+`install` fetches `simple-rag` from the examples registry. `cache
+populate` downloads both models. `application start` adds Open WebUI
+to the platform, on the applications network as a client of the API,
+then runs the application, which checks that both models are in the
 catalogue. `marigold application status simple-rag` shows exit code 0
 when they are.
 
@@ -51,7 +50,7 @@ than an error you'd notice.
 
 ## The embedding setting
 
-The package forwards one variable to Open WebUI:
+The application forwards one variable to Open WebUI:
 
 ```toml
 [environment]
@@ -60,8 +59,8 @@ RAG_EMBEDDING_MODEL = "sentence-transformers/all-minilm-l6-v2"
 
 Marigold's CLI passes `[environment]` values through to the other
 services in the stack without interpreting them. To change the
-embedding model, change it here and in the package's `models.yaml`
-together, then rebuild, install and populate the package.
+embedding model, change it here and in the application's `models.yaml`
+together, then rebuild, reinstall and populate it.
 
 ## Ask a question
 
@@ -71,8 +70,7 @@ cites the file confirms the full path -- embedding, storage, retrieval,
 generation -- ran locally.
 
 A general question is weak evidence: the model may answer from its
-training. The [simple-rag example](/examples/simple-rag.html) ships
-three invented documents and a question set that separates retrieval
+training. The `simple-rag` application ships three invented documents and a question set that separates retrieval
 from recall, including one question whose correct answer is "I don't
 know".
 
@@ -92,9 +90,9 @@ path belongs to Open WebUI.
 
 ## Change the chat model
 
-The chat model is an entry in the package's `models.yaml`.
-[Adding a new model](/tutorials/adding-a-model.html) covers the edit,
-rebuild and populate loop.
+The chat model is an entry in the application's `models.yaml`.
+[Building](/docs/building.html#running-while-you-develop) covers the
+edit, reinstall and populate loop.
 
 ## Stop
 

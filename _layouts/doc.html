@@ -1,0 +1,48 @@
+---
+layout: default
+---
+{%- comment -%}
+  Documentation pages. Their source is docs/ in the marigold repository,
+  checked out into docs/ by .github/workflows/site.yml, so page.path is
+  also the page's path in marigold. Each page carries its own <h1>; the
+  sidebar lists every page by nav_order.
+{%- endcomment -%}
+{%- assign docs = site.pages | where: "dir", "/docs/" | sort: "nav_order" -%}
+<main class="doc-grid wrap">
+
+  <nav class="doc-nav" aria-label="Documentation">
+    <p class="section-label">Documentation</p>
+    <ul>
+      {%- for doc in docs %}
+      <li><a href="{{ doc.url | relative_url }}"{% if doc.url == page.url %} aria-current="page"{% endif %}>{{ doc.title }}</a></li>
+      {%- endfor %}
+    </ul>
+  </nav>
+
+  <article class="post-body doc-body" itemscope itemtype="https://schema.org/TechArticle">
+    <div itemprop="articleBody">
+      {{ content }}
+    </div>
+    <p class="doc-source">
+      <a href="https://github.com/bayinfosys/marigold/blob/master/{{ page.path }}">Source of this page on GitHub</a>
+    </p>
+  </article>
+
+</main>
+
+{% if content contains "language-mermaid" %}
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  // kramdown with rouge puts the class on a wrapping div; without rouge,
+  // on the <code>. Handle both, outermost element only.
+  document.querySelectorAll(".language-mermaid").forEach((el) => {
+    if (el.parentElement.closest(".language-mermaid")) return;
+    const div = document.createElement("div");
+    div.className = "mermaid";
+    div.textContent = el.textContent;
+    (el.tagName === "CODE" ? el.parentElement : el).replaceWith(div);
+  });
+  mermaid.initialize({ startOnLoad: false, theme: "neutral" });
+  await mermaid.run();
+</script>
+{% endif %}

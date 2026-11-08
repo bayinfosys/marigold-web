@@ -4,8 +4,8 @@ baseurl: ""
 
 description: >
   Self-hosted, open source LLM server and inference API for open-weight
-  HuggingFace models. Typed async API, declarative workflow engine,
-  and an eval surface, running on your own hardware.
+  HuggingFace models. Applications installed from registries share one
+  model cache and one worker, on your own hardware.
 
 plugins:
   - jekyll-sitemap
@@ -16,10 +16,6 @@ collections:
   tutorials:
     output: true
     permalink: /tutorials/:path.html
-
-  examples:
-    output: true
-    permalink: /examples/:path.html
 
 # Head tags read these values; a page overrides any of them in front matter.
 #   og_type   website | article
@@ -44,12 +40,14 @@ defaults:
     values:
       layout: tutorial
       og_type: article
+  # Documentation, checked out from the marigold repository at build
+  # time. See .github/workflows/site.yml.
   - scope:
-      path: ""
-      type: examples
+      path: "docs"
     values:
-      layout: tutorial
+      layout: doc
       og_type: article
+      title_suffix: " -- Marigold docs"
   - scope:
       path: "403.html"
     values:
@@ -64,3 +62,5 @@ exclude:
   - dist
   - seo
   - scripts
+  - _marigold
+  - vendor

@@ -1,0 +1,12 @@
+{%- comment -%}
+  The quickstart commands: the first sh block under "## Quickstart" in
+  the marigold README, which .github/workflows/site.yml copies to
+  _includes/marigold-readme.md. The README is the only place to change
+  them.
+{%- endcomment -%}
+{%- capture readme %}{% include marigold-readme.md %}{% endcapture -%}
+{%- assign section = readme | split: "## Quickstart" | last | split: "
+## " | first -%}
+{%- assign blocks = section | split: "```sh" -%}
+{%- assign quickstart = blocks[1] | split: "```" | first -%}
+<pre><code>{{ quickstart | strip | escape }}</code></pre>

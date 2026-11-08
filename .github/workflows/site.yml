@@ -1,0 +1,76 @@
+name: site
+
+# Builds marigold.run with GitHub Pages' own Jekyll build. The
+# documentation is not in this repository: every build checks out docs/
+# from bayinfosys/marigold and renders it at /docs/, so the site always
+# shows the documentation on marigold's master branch.
+#
+# Rebuilds on a push here, on a docs change in marigold (which sends a
+# repository_dispatch of type docs-updated), daily, and by hand.
+#
+# One-time settings: Settings, Pages, Source: GitHub Actions. The custom
+# domain stays marigold.run.
+
+on:
+  push:
+    branches: [master]
+  repository_dispatch:
+    types: [docs-updated]
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check out the marigold documentation
+        uses: actions/checkout@v5
+        with:
+          repository: bayinfosys/marigold
+          ref: master
+          path: _marigold
+          sparse-checkout: |
+            docs
+            README.md
+          sparse-checkout-cone-mode: false
+
+      # docs/ is rendered as it stands: GitHub Pages' default plugins make
+      # README.md the index (jekyll-readme-index) and turn links to .md
+      # files into links to their pages (jekyll-relative-links). The
+      # README goes to _includes for the home page's quickstart.
+      - name: Add the documentation to the site
+        run: |
+          mv _marigold/docs docs
+          mv _marigold/README.md _includes/marigold-readme.md
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/jekyll-build-pages@v1
+        with:
+          source: .
+          destination: ./_site
+
+      - uses: actions/upload-pages-artifact@v4
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

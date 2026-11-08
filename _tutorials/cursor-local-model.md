@@ -5,7 +5,7 @@ date: 2026-10-01
 last_modified_at: 2026-10-01
 category: Engineering
 reading_time: 6
-related: [setup, chat, adding-a-model]
+related: [getting-started, api, building]
 ---
 
 Cursor can use a local model for chat through its "Override OpenAI Base
@@ -16,8 +16,9 @@ tutorial connects a Cursor local model served by Marigold, states which
 Cursor features use it, and covers VS Code with Continue as the route
 where requests go straight from the editor to your machine.
 
-This assumes the [setup guide](/tutorials/setup.html) is done and the
-[chat example](/examples/chat.html) is running.
+This assumes [Getting started](/docs/getting-started.html) is done and
+an application with an instruct model, such as `chat` from the examples
+registry, is running.
 
 ## How Cursor reaches a custom model
 
@@ -85,9 +86,9 @@ Select that model in a chat and send a message.
 | Tab completion | Cursor's built-in models |
 | Agent and Edit | Cursor's own models |
 
-Two Marigold limits apply to chat. `stream=true` returns correctly
-framed chunks without token-level streaming, so each reply appears at
-once. Only one tool call per assistant turn round-trips correctly.
+`stream=true` returns correctly framed chunks without token-level
+streaming, so each reply appears at once. The full behaviour of the
+endpoints is in [API](/docs/api.html#openai-compatible-endpoints).
 
 To return to Cursor's own models, turn the base URL override off.
 
@@ -111,11 +112,11 @@ models:
 ```
 
 The same OpenAI-compatible endpoints serve any local AI IDE or client
-that accepts a custom base URL. Clients that need token streaming or
-parallel tool calls will hit the two limits above.
+that accepts a custom base URL. Clients that need token-level
+streaming will see each reply arrive whole.
 
 ## Changing the model
 
-The model comes from the running package's `models.yaml`.
-[Adding a new model](/tutorials/adding-a-model.html) covers the edit,
-rebuild and populate loop.
+The model comes from the running application's `models.yaml`.
+[Building](/docs/building.html#running-while-you-develop) covers the
+edit, reinstall and populate loop.

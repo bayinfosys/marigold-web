@@ -36,7 +36,7 @@ schema: |
       text, image and audio models served side by side.
     </p>
     <div class="hero-actions">
-      <a href="/tutorials/setup.html" class="btn-primary">Read the setup guide</a>
+      <a href="/docs/getting-started.html" class="btn-primary">Get started</a>
       <a href="/blog/llm-providers.html" class="btn-secondary">See the benchmark</a>
     </div>
   </div>
@@ -68,17 +68,17 @@ schema: |
         <tr>
           <td>Model source</td>
           <td>Ollama model library; imports GGUF and Safetensors</td>
-          <td>HuggingFace repositories declared in a package's <code>models.yaml</code>, loaded with Transformers; optional 4-bit loading</td>
+          <td>HuggingFace repositories declared in an application's <code>models.yaml</code>, loaded with Transformers; optional 4-bit loading</td>
         </tr>
         <tr>
           <td>Model types</td>
           <td>Chat, vision, embeddings, reasoning</td>
-          <td>Instruct, img2txt, text and image embedding, txt2img, tts, txt2audio, depth, img2mask, text, image and image-text evals</td>
+          <td>Instruct, embeddings, vision, speech in and out, music, image and video generation, depth, segmentation and evals: <a href="/docs/model-types.html">every type</a></td>
         </tr>
         <tr>
           <td>OpenAI-compatible API</td>
           <td><code>/v1/chat/completions</code>, <code>/v1/completions</code>, <code>/v1/embeddings</code>, <code>/v1/models</code>, <code>/v1/responses</code>; streaming and tools</td>
-          <td><code>/v1/chat/completions</code>, <code>/v1/embeddings</code>, <code>/v1/models</code>; no token-level streaming; one tool call per assistant turn</td>
+          <td><code>/v1/chat/completions</code>, <code>/v1/embeddings</code>, <code>/v1/models</code>; tools; no token-level streaming</td>
         </tr>
         <tr>
           <td>Other APIs</td>
@@ -93,7 +93,7 @@ schema: |
         <tr>
           <td>Multi-step work</td>
           <td>In client code</td>
-          <td>Declarative workflows: parallel steps, branching on outputs, per-step audit trail</td>
+          <td>Applications: code in its own container calling any model through the API, installed from registries and composed through <code>requires</code></td>
         </tr>
         <tr>
           <td>Hosted option</td>
@@ -165,7 +165,7 @@ schema: |
       <div class="faq-item">
         <p class="faq-q">Clients that need the full chat API</p>
         <p class="faq-a">Coding agents and desktop clients that rely on
-        token streaming, parallel tool calls, the Responses API or
+        token streaming, the Responses API or
         Anthropic-style clients work against Ollama today.</p>
       </div>
       <div class="faq-item">
@@ -189,13 +189,14 @@ schema: |
       </div>
       <div class="faq-item">
         <p class="faq-q">Pipelines across models</p>
-        <p class="faq-a">A workflow chains models -- extract, classify,
-        summarise, convert to speech -- with parallel steps, branching on
-        output values and a per-step audit trail.</p>
+        <p class="faq-a">An application chains models -- extract, classify,
+        summarise, convert to speech -- in its own code, and applications
+        build on each other through <code>requires</code>.
+        <a href="/docs/applications.html">Applications</a>.</p>
       </div>
       <div class="faq-item">
         <p class="faq-q">Several applications on one host</p>
-        <p class="faq-a">Each package declares the models it needs. The
+        <p class="faq-a">Each application declares the models it needs. The
         platform downloads each model once; applications run in their own
         containers and reach models only through the API.</p>
       </div>
@@ -212,20 +213,13 @@ schema: |
 <section id="switch">
   <div class="wrap">
     <h2 class="section-label">Trying it next to Ollama</h2>
-    <pre><code>pip install bayis-marigold
-git clone https://github.com/bayinfosys/marigold-examples
-marigold cache init
-marigold platform start
-marigold package create marigold-examples/chat -o /tmp
-marigold package install /tmp/chat-&lt;version&gt;.tar.gz
-marigold cache populate chat
-marigold application start chat</code></pre>
+    {% include quickstart.html %}
     <p class="faq-a">
       An OpenAI-SDK client moves across by changing its base URL from
       <code>http://localhost:11434/v1</code> to
       <code>http://localhost:8000/v1</code>. On a single GPU, stop Ollama
       before starting the Marigold worker: both allocate VRAM greedily.
-      The <a href="/tutorials/setup.html">local LLM server setup guide</a>
+      The <a href="/docs/getting-started.html">getting-started guide</a>
       covers each step.
     </p>
   </div>
@@ -237,7 +231,7 @@ marigold application start chat</code></pre>
     <p>Open source. Clone it, run it on your own hardware.</p>
     <div class="hero-actions">
       <a href="https://github.com/bayinfosys/marigold" class="btn-primary">View on GitHub</a>
-      <a href="/tutorials/setup.html" class="btn-secondary">Read the setup guide</a>
+      <a href="/docs/getting-started.html" class="btn-secondary">Get started</a>
     </div>
   </div>
 </section>

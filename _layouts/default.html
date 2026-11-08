@@ -7,12 +7,13 @@
   {%- endcomment -%}
   {%- assign canonical = page.url | absolute_url -%}
   {%- assign page_description = page.description | default: site.description | strip_newlines | strip -%}
-  {%- assign og_title = page.og_title | default: page.title -%}
+  {%- assign full_title = page.title | append: page.title_suffix -%}
+  {%- assign og_title = page.og_title | default: full_title -%}
   {%- assign og_description = page.og_description | default: page_description | strip_newlines | strip -%}
   {%- assign og_image = page.image | default: "/assets/og-default.png" | absolute_url -%}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ page.title | escape }}</title>
+  <title>{{ full_title | escape }}</title>
   <meta name="description" content="{{ page_description | escape }}">
   <meta name="author" content="Bay Information Systems">
   {%- if page.robots %}

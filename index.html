@@ -20,7 +20,7 @@ schema: |
         "@type": "SoftwareApplication",
         "name": "Marigold",
         "url": "https://marigold.run/",
-        "description": "Self-hosted, open source LLM server and inference API for open-weight models. Runs air-gapped once models are cached. Typed async API, declarative workflow engine, evals.",
+        "description": "Self-hosted, open source LLM server and inference API for open-weight models. Runs air-gapped once models are cached. Applications install from registries and share one model cache.",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Linux, Docker",
         "license": "https://opensource.org/licenses/MIT",
@@ -59,16 +59,9 @@ schema: |
       typed HTTP API. No request reaches OpenAI, Anthropic, or any other
       external provider; runs air-gapped once models are cached.
     </p>
-    <pre><code>pip install bayis-marigold
-git clone https://github.com/bayinfosys/marigold-examples
-marigold cache init
-marigold platform start
-marigold package create marigold-examples/chat -o /tmp
-marigold package install /tmp/chat-&lt;version&gt;.tar.gz
-marigold cache populate chat
-marigold application start chat</code></pre>
+    {% include quickstart.html %}
     <div class="hero-actions">
-      <a href="/tutorials/setup.html" class="btn-primary">Read the setup guide</a>
+      <a href="/docs/getting-started.html" class="btn-primary">Get started</a>
       <a href="https://github.com/bayinfosys/marigold" class="btn-secondary">View on GitHub</a>
     </div>
   </div>
@@ -100,9 +93,10 @@ marigold application start chat</code></pre>
       <div class="pillar">
         <p class="pillar-num">02</p>
         <h3>Applications are the thin layer</h3>
-        <p>A models.yaml, a marigold.toml, and application code -- a
-        package. Marigold runs it; it never runs the package's own
-        code, by design.</p>
+        <p>A marigold.toml, a models.yaml and the code that uses them,
+        installed from a registry by name. The code runs in its own
+        container and reaches models only through the API, never on the
+        host.</p>
       </div>
       <div class="pillar">
         <p class="pillar-num">03</p>
@@ -127,9 +121,9 @@ marigold application start chat</code></pre>
         enable cross-modal search.</p>
         <div class="usecase-tags">
           <span class="tag">img2txt</span>
-          <span class="tag">text-embed</span>
+          <span class="tag">text-embedding</span>
           <span class="tag">instruct</span>
-          <span class="tag">image-embed</span>
+          <span class="tag">image-embedding</span>
         </div>
       </div>
       <div class="usecase-card">
@@ -149,7 +143,7 @@ marigold application start chat</code></pre>
         embedding. On deviation, segment both, diff the masks, and describe
         the discrepancy in natural language.</p>
         <div class="usecase-tags">
-          <span class="tag">image-embed</span>
+          <span class="tag">image-embedding</span>
           <span class="tag">img2mask</span>
           <span class="tag">img2txt</span>
           <span class="tag">instruct</span>
@@ -158,7 +152,7 @@ marigold application start chat</code></pre>
       <div class="usecase-card">
         <h4>Document briefing and audio delivery</h4>
         <p>Extract entities, classify, summarise, and convert to speech in
-        multiple languages from one workflow submission. Output: a summary
+        multiple languages from one application run. Output: a summary
         plus audio per language.</p>
         <div class="usecase-tags">
           <span class="tag">img2txt</span>
@@ -172,7 +166,7 @@ marigold application start chat</code></pre>
         set. Low-confidence predictions go to an instruct model for
         explanation. No retraining.</p>
         <div class="usecase-tags">
-          <span class="tag">tabular-classify</span>
+          <span class="tag">text-embedding</span>
           <span class="tag">instruct</span>
         </div>
       </div>
@@ -182,50 +176,50 @@ marigold application start chat</code></pre>
         change, describe it and assemble a report, delivered as text and
         audio on a schedule.</p>
         <div class="usecase-tags">
-          <span class="tag">image-embed</span>
+          <span class="tag">image-embedding</span>
           <span class="tag">img2txt</span>
           <span class="tag">instruct</span>
           <span class="tag">tts</span>
         </div>
       </div>
     </div>
+    <p class="how-note">
+      Each of these is a set of small applications. The ones that recur
+      are the basis of a
+      <a href="/blog/a-standard-library-for-marigold-applications.html">standard library for Marigold applications</a>.
+    </p>
   </div>
 </section>
 
 <section class="how">
   <div class="wrap">
-    <h2 class="section-label">What workflows can do</h2>
+    <h2 class="section-label">What the platform does</h2>
     <div class="how-cols">
       <div>
-        <h3>Model types</h3>
+        <h3>Models</h3>
         <ul>
-          <li>text-embedding, image-embedding</li>
-          <li>instruct (chat / instruction-following)</li>
-          <li>txt2img, img2txt, img2mask, depth</li>
-          <li>tts, txt2audio</li>
-          <li>text-eval, image-eval, image-text-eval</li>
-          <li>text-similarity</li>
+          <li>Instruct, with OpenAI-compatible chat and tools</li>
+          <li>Text and image embeddings</li>
+          <li>Vision: img2txt, img2mask, depth</li>
+          <li>Speech and audio: tts, asr, txt2audio</li>
+          <li>Image and video generation</li>
+          <li>Text, image and image-text evals</li>
         </ul>
+        <p><a href="/docs/model-types.html">Every model type &rarr;</a></p>
       </div>
       <div>
-        <h3>Workflow features</h3>
+        <h3>Applications</h3>
         <ul>
-          <li>Shared state across steps</li>
-          <li>Sequential and parallel execution</li>
-          <li>Conditional branching on output values</li>
-          <li>Halt and reject with a structured result</li>
-          <li>Prompt interpolation from prior outputs</li>
-          <li>Per-step audit trail -- status, timing, output, run count</li>
+          <li>Installed by name from any registry</li>
+          <li>Dependencies on other applications, installed with them</li>
+          <li>One model cache and one worker shared by all of them</li>
+          <li>Deterministic archives, checked by sha256 on install</li>
+          <li>A registry is static files: GitHub Pages or any host</li>
+          <li>Each instance in its own container, API access only</li>
         </ul>
+        <p><a href="/docs/applications.html">How applications work &rarr;</a></p>
       </div>
     </div>
-    <p class="how-note">
-      Workflow execution is built on
-      <a href="https://pypi.org/project/runfox/">runfox</a>
-      and
-      <a href="https://pypi.org/project/json-logic-path/">json-logic-path</a>,
-      both open source on PyPI.
-    </p>
     <p class="how-note">
       Marigold (<code>bayis-marigold</code> on PyPI) is a self-hosted
       inference server. The Marigold depth-estimation model from ETH
@@ -236,17 +230,17 @@ marigold application start chat</code></pre>
 
 <section class="usecases">
   <div class="wrap">
-    <h2 class="section-label">Guides</h2>
+    <h2 class="section-label">Start here</h2>
     <div class="usecase-grid">
-      <a class="usecase-card" href="/tutorials/setup.html">
+      <a class="usecase-card" href="/docs/getting-started.html">
         <h4>Run a local LLM server</h4>
-        <p>Install the CLI, start the platform with Docker Compose, cache a
-        model and run a first application.</p>
+        <p>Install the CLI, add the examples registry, install an
+        application, cache its models and run it.</p>
       </a>
-      <a class="usecase-card" href="/tutorials/cursor-local-model.html">
-        <h4>Cursor local model</h4>
-        <p>Point Cursor, or VS Code with Continue, at a self-hosted model,
-        and what each editor sends where.</p>
+      <a class="usecase-card" href="/docs/building.html">
+        <h4>Build and publish an application</h4>
+        <p>Declare models, write the code, package it, and publish a
+        registry from a GitHub repository.</p>
       </a>
       <a class="usecase-card" href="/ollama-alternative.html">
         <h4>Ollama alternative</h4>
@@ -263,7 +257,7 @@ marigold application start chat</code></pre>
     <p>Open source. Clone it, run it on your own hardware.</p>
     <div class="hero-actions">
       <a href="https://github.com/bayinfosys/marigold" class="btn-primary">View on GitHub</a>
-      <a href="/tutorials/setup.html" class="btn-secondary">Read the setup guide</a>
+      <a href="/docs/getting-started.html" class="btn-secondary">Get started</a>
     </div>
     <p class="tagline-contact">
       Questions? <a href="mailto:ed@bayis.co.uk">ed@bayis.co.uk</a>

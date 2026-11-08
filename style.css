@@ -975,3 +975,59 @@ nav a.cta-sm {
   .waitlist-row { flex-direction: column; }
   .callout { flex-direction: column; align-items: flex-start; }
 }
+
+
+/* =======================================================================
+   DOCUMENTATION -- _layouts/doc.html
+   Pages checked out from marigold/docs at build time.
+   ======================================================================= */
+
+.doc-grid {
+  display: grid;
+  grid-template-columns: 14rem minmax(0, 1fr);
+  gap: var(--gap);
+  align-items: start;
+}
+
+.doc-nav {
+  position: sticky;
+  top: 1.5rem;
+  padding: 3rem 0 2rem;
+}
+
+.doc-nav ul { list-style: none; }
+
+.doc-nav li { padding: 0.2rem 0; }
+
+.doc-nav a {
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  color: var(--ink-mid);
+  text-decoration: none;
+}
+
+.doc-nav a:hover { color: var(--amber); }
+
+.doc-nav a[aria-current="page"] {
+  color: var(--amber);
+  font-weight: 600;
+}
+
+.doc-body { margin: 0; }
+
+.doc-source {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.85rem;
+}
+
+.doc-body .mermaid {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .doc-grid { grid-template-columns: 1fr; gap: 0; }
+  .doc-nav { position: static; padding-bottom: 0; }
+}
