@@ -23,4 +23,5 @@ columns:
       - { title: Ollama alternative, url: /ollama-alternative.html }
       - { title: vLLM vs Ollama benchmark, url: /blog/llm-providers.html }
       - { title: Data sovereignty, url: /data-sovereign.html }
-      - { title: Support and consulting, url: /pricing.html }
+      - { title: Deployment, url: /docs/deployment.html }
+      - { title: Support and design partners, url: /pricing.html }

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Data Sovereignty and Self-Hosted AI Inference -- Marigold"
-description: "Why running inference on your own hardware resolves regulatory, exposure, and training-reappearance risk at the architecture level, not the policy level."
+description: "Why running inference on infrastructure you control -- a laptop, a server, or your own AWS or Azure account -- resolves regulatory, exposure and training-reappearance risk at the architecture level."
 canonical: "https://marigold.run/data-sovereign.html"
 og_title: "Data Sovereignty -- Marigold"
 og_description: "Self-hosted inference removes regulatory, exposure, and training-reappearance risk by construction, not by policy."
@@ -33,12 +33,17 @@ schema: |
         {
           "@type": "Question",
           "name": "What data actually leaves my machine when I use Marigold?",
-          "acceptedAnswer": { "@type": "Answer", "text": "None, once set up. Models are downloaded once to local disk. After that, inference runs entirely on your own hardware and the stack can be disconnected from the network entirely -- see the setup tutorial for the exact environment variables involved." }
+          "acceptedAnswer": { "@type": "Answer", "text": "None, once set up. Models are downloaded once to local disk. After that, inference runs entirely on infrastructure you control, and the stack can be disconnected from the network entirely." }
         },
         {
           "@type": "Question",
           "name": "Is self-hosting alone enough to be GDPR compliant?",
           "acceptedAnswer": { "@type": "Answer", "text": "It resolves the cross-border transfer and third-party processor questions, which are usually the hardest part. It does not by itself make every use of personal data lawful -- that still depends on your legal basis, retention practice, and sector rules. Marigold does not provide legal advice." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Marigold run in our own AWS or Azure account?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. The database can be AWS RDS or Azure Database for PostgreSQL, the workers GPU instances, and outputs S3 or Azure Blob Storage, all in your own account. Applications do not change between a laptop and a cloud account; only the system configuration does." }
         }
       ]
     }
@@ -51,13 +56,14 @@ schema: |
 <section class="hero">
   <div class="wrap">
     <p class="hero-eyebrow">Data sovereignty</p>
-    <h1 class="slogan">Your data never leaves your machine.</h1>
+    <h1 class="slogan">Your data never leaves infrastructure you control.</h1>
     <p class="hero-tagline">Not a policy commitment. An architectural fact.</p>
     <p class="hero-sub">
-      Marigold runs open-weight models on your own hardware. There is no
+      Marigold runs open-weight models on infrastructure you control: a
+      laptop, a server, or your own AWS or Azure account. There is no
       vendor in the inference path to send data to, misconfigure a policy
       around, or have a breach on your behalf. Once set up, it runs
-      airgapped -- inference makes no external request at all.
+      air-gapped -- inference makes no external request at all.
     </p>
     <div class="hero-actions">
       <a href="#risk" class="btn-primary">The case for it</a>
@@ -125,7 +131,7 @@ schema: |
       <tbody>
         <tr>
           <td>Inference location</td>
-          <td class="col-marigold">Your own hardware</td>
+          <td class="col-marigold">Your hardware, or your own cloud account</td>
           <td>Provider's infrastructure</td>
         </tr>
         <tr>
@@ -155,6 +161,59 @@ schema: |
         </tr>
       </tbody>
     </table>
+  </div>
+</section>
+
+<section id="shapes">
+  <div class="wrap">
+    <h2 class="section-label">Where it runs</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Shape</th>
+          <th>Database</th>
+          <th>Workers</th>
+          <th>Outputs</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Laptop or server</td>
+          <td>The bundled Postgres</td>
+          <td>The local GPU or CPU</td>
+          <td>Local disk</td>
+        </tr>
+        <tr>
+          <td>Startup</td>
+          <td>A managed Postgres such as Supabase</td>
+          <td>Rented GPU instances</td>
+          <td>An S3 bucket</td>
+        </tr>
+        <tr>
+          <td>Institution</td>
+          <td>AWS RDS or Azure Database for PostgreSQL, in your account</td>
+          <td>GPU instances in your account</td>
+          <td>S3 or Azure Blob Storage, in your account</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="how-note">
+      Applications do not change between these: only the system
+      configuration does. In every shape the models, the prompts and the
+      outputs stay on infrastructure you own or rent directly.
+      <a href="/docs/deployment.html">Deployment guide &rarr;</a>
+    </p>
+  </div>
+</section>
+
+<section class="statement">
+  <div class="wrap">
+    <p>
+      We are looking for design partners: organisations running Marigold
+      in their own AWS or Azure accounts, who want help with the
+      deployment and a say in what the platform does next.
+      <a href="/pricing.html#design-partners">Become a design partner &rarr;</a>
+    </p>
   </div>
 </section>
 
@@ -198,6 +257,17 @@ schema: |
       </div>
 
       <div class="faq-item">
+        <p class="faq-q">Can Marigold run in our own AWS or Azure account?</p>
+        <p class="faq-a">
+          Yes. The database can be AWS RDS or Azure Database for
+          PostgreSQL, the workers GPU instances, and outputs S3 or Azure
+          Blob Storage, all in your own account. Applications do not change
+          between a laptop and a cloud account; only the system
+          configuration does. See <a href="/docs/deployment.html">Deployment</a>.
+        </p>
+      </div>
+
+      <div class="faq-item">
         <p class="faq-q">Is self-hosting alone enough to be GDPR compliant?</p>
         <p class="faq-a">
           It resolves the cross-border transfer and third-party processor
@@ -226,10 +296,10 @@ schema: |
 <section class="tagline-break">
   <div class="wrap">
     <h2 class="slogan">Nothing to send. Nothing to leak.</h2>
-    <p>Open source. Clone it, run it on your own hardware.</p>
+    <p>Open source. Run it on your own hardware or in your own cloud account.</p>
     <div class="hero-actions">
-      <a href="https://github.com/bayinfosys/marigold" class="btn-primary">View on GitHub</a>
-      <a href="/docs/getting-started.html" class="btn-secondary">Get started</a>
+      <a href="/docs/deployment.html" class="btn-primary">Deployment guide</a>
+      <a href="/pricing.html#design-partners" class="btn-secondary">Become a design partner</a>
     </div>
   </div>
 </section>

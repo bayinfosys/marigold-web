@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "Self-Hosted LLM Server and Inference API -- Marigold"
-description: "Open source self-hosted LLM server with an OpenAI-compatible API. Serves text, image and audio models from Docker Compose on your own hardware."
-og_description: "Open source self-hosted LLM server. OpenAI-compatible chat and embeddings, air-gapped once models are cached."
+description: "Open source self-hosted LLM server and inference platform. One shared model layer for every AI application, from a laptop to your own cloud account, with OpenAI-compatible endpoints."
+og_description: "Inference stacks done properly: one model layer that every AI application on your machine shares, from a laptop to your own cloud account."
 last_modified_at: 2026-10-01
 schema: |
   <script type="application/ld+json">
@@ -50,14 +50,16 @@ schema: |
       <img src="https://img.shields.io/github/v/tag/bayinfosys/marigold" alt="Latest tag" style="vertical-align:middle;">
       &nbsp;Open source &middot; Python &middot; Open-weight models
     </p>
-    <h1 class="slogan">A self-hosted LLM server and inference API.</h1>
-    <p class="hero-tagline">Serve HuggingFace models over a typed HTTP API, on your own hardware.</p>
+    <h1 class="slogan">Inference stacks done properly.</h1>
+    <p class="hero-tagline">One model layer for every AI application on your machine.</p>
     <p class="hero-sub">
-      Marigold runs text, image, and audio models locally from Docker
-      Compose. Chat and embeddings are served on OpenAI-compatible
-      endpoints; image generation, speech and the other model types use the
-      typed HTTP API. No request reaches OpenAI, Anthropic, or any other
-      external provider; runs air-gapped once models are cached.
+      Chat for twenty minutes, walk away, and the same GPU goes back to
+      indexing your documents and photos. Marigold is a self-hosted
+      inference platform: applications share one model cache and one
+      queue instead of each bringing its own model server. Chat and
+      embeddings on OpenAI-compatible endpoints, image, speech and the
+      other model types on a typed API -- on a laptop, a box at home, or
+      your own cloud account, air-gapped once models are cached.
     </p>
     {% include quickstart.html %}
     <div class="hero-actions">
@@ -70,12 +72,11 @@ schema: |
 <section class="statement">
   <div class="wrap">
     <p>
-      Runs on hardware you control. No request leaves the machine, no
-      third-party model provider sits in the path, nothing is retained
-      outside the directory you point it at.
-      <strong>For regulated sectors, that resolves the data question
-      before procurement starts.</strong>
-      <a href="/data-sovereign.html">Architecture detail &rarr;</a>
+      Runs on infrastructure you control, from a laptop to your own AWS or
+      Azure account. No third-party model provider sits in the path.
+      <strong>The data question is answered by the architecture, not by
+      a contract.</strong>
+      <a href="/data-sovereign.html">Data sovereignty &rarr;</a>
     </p>
   </div>
 </section>
@@ -107,6 +108,41 @@ schema: |
         <a href="https://www.bayis.co.uk/library/45-fat-protocols-for-ai.html">Read the essay &rarr;</a></p>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="pillars" id="scale">
+  <div class="wrap">
+    <h2 class="section-label">From a laptop to your own cloud account</h2>
+    <div class="pillar-grid">
+      <div class="pillar">
+        <p class="pillar-num">01</p>
+        <h3>A laptop or a box at home</h3>
+        <p>Everything under one directory: the bundled Postgres, a local
+        GPU or CPU worker, outputs on disk. Several applications share it,
+        and requests queue rather than fight for the GPU.</p>
+      </div>
+      <div class="pillar">
+        <p class="pillar-num">02</p>
+        <h3>A startup</h3>
+        <p>A managed Postgres such as Supabase, rented GPU instances as
+        workers, outputs in an S3 bucket. The same applications, with more
+        throughput: add a GPU host and nothing else changes.</p>
+      </div>
+      <div class="pillar">
+        <p class="pillar-num">03</p>
+        <h3>An institution</h3>
+        <p>AWS RDS or Azure Database for PostgreSQL, GPU instances and
+        object storage, all in your own account. Nothing routed through a
+        third party.
+        <a href="/docs/deployment.html">Deployment &rarr;</a></p>
+      </div>
+    </div>
+    <p class="how-note">
+      We are looking for design partners running Marigold in their own
+      cloud accounts.
+      <a href="/pricing.html">Support and design partners &rarr;</a>
+    </p>
   </div>
 </section>
 
@@ -253,8 +289,8 @@ schema: |
 
 <section class="tagline-break">
   <div class="wrap">
-    <h2 class="slogan">Stop rebuilding your inference stack per engagement.</h2>
-    <p>Open source. Clone it, run it on your own hardware.</p>
+    <h2 class="slogan">Build the application. The models are already there.</h2>
+    <p>Open source. Install it, run it on your own hardware.</p>
     <div class="hero-actions">
       <a href="https://github.com/bayinfosys/marigold" class="btn-primary">View on GitHub</a>
       <a href="/docs/getting-started.html" class="btn-secondary">Get started</a>

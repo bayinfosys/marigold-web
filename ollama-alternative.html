@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Ollama Alternative for Self-Hosted Inference -- Marigold"
-description: "Marigold is an open source Ollama alternative for teams serving more than chat: embeddings, vision, speech, image generation and evals behind one self-hosted inference API."
+description: "Marigold and Ollama compared: when a single-machine model runner fits, and when an open source, self-hosted inference platform shared by several applications does."
 og_description: "Where Marigold and Ollama differ: model types, API surface, request handling and measured throughput on one consumer GPU."
 og_type: article
 last_modified_at: 2026-10-01
@@ -26,14 +26,15 @@ schema: |
 <section class="hero">
   <div class="wrap">
     <p class="hero-eyebrow">Comparison</p>
-    <h1 class="slogan">An Ollama alternative for self-hosted inference.</h1>
-    <p class="hero-tagline">Open-weight models on your own hardware, arranged as a platform.</p>
+    <h1 class="slogan">Marigold and Ollama: when to use which.</h1>
+    <p class="hero-tagline">A model runner for one person, or a model layer for many applications.</p>
     <p class="hero-sub">
       Ollama runs open models on one machine, from a desktop app, a
-      terminal or a coding agent. Marigold is an open source Ollama
-      alternative arranged as a platform: a shared model cache, a queue, a
-      worker, and applications that call one typed inference API, with
-      text, image and audio models served side by side.
+      terminal or a coding agent, and does it well. Marigold is a
+      different layer: a shared model cache, a queue and workers that
+      several applications call through one API, with text, image and
+      audio models side by side, from a laptop to your own cloud
+      account.
     </p>
     <div class="hero-actions">
       <a href="/docs/getting-started.html" class="btn-primary">Get started</a>
@@ -171,7 +172,8 @@ schema: |
       <div class="faq-item">
         <p class="faq-q">No local GPU</p>
         <p class="faq-a">Ollama's cloud models run without one. Marigold has
-        no hosted service; it runs on CPU or on your own GPU.</p>
+        no hosted service; it runs on CPU, on your own GPU, or on GPU
+        instances in your own cloud account.</p>
       </div>
     </div>
   </div>
