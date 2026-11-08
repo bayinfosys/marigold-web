@@ -48,6 +48,12 @@ defaults:
       layout: doc
       og_type: article
       title_suffix: " -- Marigold docs"
+  # docs/README.md has front matter, so jekyll-readme-index leaves it
+  # alone; this makes it the /docs/ index.
+  - scope:
+      path: "docs/README.md"
+    values:
+      permalink: /docs/
   - scope:
       path: "403.html"
     values:
